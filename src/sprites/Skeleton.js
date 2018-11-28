@@ -10,7 +10,6 @@ export default class Skeleton extends CharacterSheet {
     scene.physics.add.existing(this);
 
     this.setInteractive();
-    this.weaponTimer = 50;
 
     //quick start of inventory system.
     //items will be in very large json
@@ -18,8 +17,8 @@ export default class Skeleton extends CharacterSheet {
     this.equipped = {
       weapon: {
         name: 'Undead Revenger',
-        dps: 0.8,
-        speed: 60,
+        damage: 78,
+        speed: 1.5,
         value: 1000,
         stats: {
           str: 2,
@@ -29,6 +28,8 @@ export default class Skeleton extends CharacterSheet {
         },
       },
       armor: {
+        slot: 'chest',
+        type: 'mail',
         name: 'Deaths Grasp',
         armor: 6,
         value: 1000,
@@ -45,11 +46,38 @@ export default class Skeleton extends CharacterSheet {
     this.agi = 9 + this.calculateStats(this.equipped, 'agi');
 
     this.currentHps = this.getMaxHp();
-    this.weaponDmg = this.equipped.weapon.dps;
+    this.weaponDmg = this.equipped.weapon.damage;
     this.chanceToMiss = .15;
-    this.chanceToCrit = .15 + this.calculateStats(this.equipped, 'crit');
+    this.crit = .15 + this.calculateStats(this.equipped, 'crit');
+
+    this.weaponTimer = this.equipped.weapon.speed * 60;
+
+    this.scene.registry.events.on('changedata', this.updateData, this);
 
   };
+
+  updateData(parent, key, data) {
+    switch (key) {
+      case 'red1.png':
+        if(this) {
+          this.setCurrentHp(this.getMaxHp()*.25, 'melee');
+        }
+        break;
+        case 'blue1.png':
+          this.equipped.weapon.speed += 1;
+          this.weaponTimer = this.equipped.weapon.speed * 60
+          break;
+      default:
+
+    }
+  }
+
+  reCalculateStats() {
+    var stats = ['str', 'sta', 'agi', 'crit']
+    stats.forEach((el) => {
+      this[el] = 19 + this.calculateStats(this.equipped, el);
+    })
+  }
 
   moveToAttacker(attacker) {
     this.scene.physics.moveToObject(this, attacker, 100);

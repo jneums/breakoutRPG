@@ -5,6 +5,7 @@ import { createAnimations, directionNames, motions } from './animations.js';
 import GameScene from './scenes/GameScene.js';
 import UIScene from './scenes/UIScene.js';
 import BreakOutScene from './scenes/BreakOutScene.js'
+import GameOverScene from './scenes/GameOverScene.js'
 
 
 
@@ -28,6 +29,19 @@ class BootScene extends Phaser.Scene {
       this.scene.start('GameScene');
     })
   }
+
+  create() {
+    this.registry.events.on('changedata', this.updateData, this);
+
+  }
+
+  updateData(parent, key, data) {
+    if(key === 'gameOver') {
+      this.scene.stop('UIScene')
+      this.scene.stop('BreakOutScene')
+
+    }
+  }
 }
 
 
@@ -41,11 +55,11 @@ var config = {
   physics: {
     default: 'arcade',
     arcade: {
-        debug: true,
+        debug: false,
         gravity: { y: 0 }
     }
   },
-  scene: [ BootScene, GameScene, BreakOutScene, UIScene ]
+  scene: [ BootScene, GameScene, BreakOutScene, UIScene, GameOverScene ]
 };
 
 var game = new Phaser.Game(config);

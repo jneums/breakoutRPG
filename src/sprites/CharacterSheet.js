@@ -32,7 +32,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
   calculateStats(equipped, stat) {
   //combine all the stat from equipped items
-    return Object.keys(equipped).map(el => equipped[el].stats[stat])
+    return Object.keys(equipped).map(child => equipped[child].stats[stat])
                                 .reduce((acc, item) => {
                                   return acc + item;
                                 })
@@ -56,8 +56,11 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.depth -= 64;
     this.setVelocity(0)
     this.scene.registry.set('targetHps', 0)
-    this.getCurrentTarget().clearCurrentTarget();
-    this.clearCurrentTarget();
+    if(this.getCurrentTarget()) {
+      this.getCurrentTarget().clearCurrentTarget();
+      this.clearCurrentTarget();
+    }
+
     this.body.checkCollision.none = true;
     this.disableInteractive();
     this.setShouldUpdate(false);
@@ -134,7 +137,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
   meleeSwing(target) {
     this.anims.play(this.type+'_attack_'+this.getFacing());
-    let dmg = Phaser.Math.Between(1,6) * this.getAttackPower();
+    let dmg = ((this.equipped.weapon.damage * this.getAttackPower()) + this.equipped.weapon.damage) /60;
     if(!this.getCurrentTarget().getCurrentTarget()) {
       this.getCurrentTarget().setCurrentTarget(this);
     }
@@ -147,9 +150,15 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       if(this.willCrit()) {
         let crit = dmg * 2;
         target.setCurrentHp(crit, 'melee')
-
+        if(this.type === 'knight') {
+          this.scene.cameras.main.shake(1000, 0.01, true);
+          this.gainXp(crit)
+        }
       } else {
         target.setCurrentHp(dmg, 'melee');
+        if(this.type === 'knight') {
+          this.gainXp(dmg)
+        }
       }
     }
 
@@ -157,7 +166,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   };
 
   willCrit() {
-    if(Phaser.Math.Between(0,100) < this.agi) {
+    if(Phaser.Math.Between(0,100) < this.crit) {
       return true;
     } else {
       return false;

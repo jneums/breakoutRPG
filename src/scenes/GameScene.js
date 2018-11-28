@@ -21,17 +21,26 @@ export default class GameScene extends Phaser.Scene {
     this.d = 0;
     this.scene;
 
+
+  }
+  updateData(parent, key, data) {
+    if(key === 'ballDrop') {
+      this.addEnemies(2);
+    }
   }
 
   create () {
     this.scene = this.scene.scene
+    this.background = this.add.image(1450, 300, 'background')
     //spawn skeletons infinitely
     this.skeletonSpawn = this.scene.time.addEvent({
-      delay: 50000,
+      delay: 30000,
       callback: this.addEnemies,
       callbackScope: this,
       repeat: -1,
     })
+
+    this.scene.registry.events.on('changedata', this.updateData, this);
     //set up scene
     this.buildMap();
     this.placeHouses();
@@ -41,19 +50,6 @@ export default class GameScene extends Phaser.Scene {
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
 
-    //move target and start moving toward new pos
-    this.input.on('pointerdown', function (pointer) {
-      //scroll plus pointer.x to compensate for follow cam cooords
-      let pointerPlusScrollX = pointer.x+this.cameras.cameras[0].scrollX;
-      let pointerPlusScrollY = pointer.y+this.cameras.cameras[0].scrollY;
-      let angle = Phaser.Math.Angle.BetweenY(this.player.x, this.player.y, pointerPlusScrollX, pointerPlusScrollY);
-
-      this.player.setFacing(angle);
-      this.moveTarget.setPosition(pointerPlusScrollX, pointerPlusScrollY )
-
-      this.scene.physics.moveToObject(this.player, this.moveTarget, 100);
-      this.player.isMoving = true;
-    }, this);
 
     //stop the player at the moveTarget, or at the hitbox of the enemy
     this.physics.add.overlap(this.player, this.moveTarget, function (playerOnMoveTarget) {
@@ -65,17 +61,6 @@ export default class GameScene extends Phaser.Scene {
       playerOnEnemy.isMoving = false;
       playerOnEnemy.body.stop()
     }, null, this);
-
-    //some keyboard events, used for testing atm
-    this.input.keyboard.on('keydown_SPACE', () => {
-      if(this.player.getCurrentTarget()) {
-        this.player.crush(this.player.getCurrentTarget())
-      }
-    });
-
-    this.input.keyboard.on('keydown_ENTER', () => {
-      this.player.morphine();
-    });
 
   }
 
@@ -124,16 +109,16 @@ export default class GameScene extends Phaser.Scene {
   }
 
   addPlayer() {
-    this.player = new Player(this, 800, 364, 'knight')
+    this.player = new Player(this, 800, 464, 'knight')
     this.player.setScale(.50)
     this.player.setCircle(150, 60, 80)
-    this.scene.cameras.main.startFollow(this.player).setZoom(1)
+    this.scene.cameras.main.setScroll(400, 100).setZoom(1.4)
   }
 
-  addEnemies() {
+  addEnemies(amt = 5) {
     //add enemies
-    for(let i = 0; i<4; i++) {
-       this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(100, 500), 'skeleton')));
+    for(let i = 0; i<amt; i++) {
+       this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
        this.skeletons[i].setCircle(50, 15, 20)
        this.skeletons[i].on('clicked', clickHandler, this);
        //this.skeletons[i].setCurrentTarget(this.player)
@@ -155,6 +140,7 @@ export default class GameScene extends Phaser.Scene {
 
   update (time, delta) {
     if(this.player.gameOver) {
+      this.scene.registry.set('gameOver', this);
       return;
     }
     this.skeletons.map((skeleton) => {
