@@ -3,6 +3,7 @@
 function createAnimations(scene) {
   let textures = [ 'skeleton' ];
 
+   //use .map to create all anims at once
    scene.anims.create({
      key: 'combust',
      frames: scene.anims.generateFrameNames('combust', {
@@ -14,7 +15,29 @@ function createAnimations(scene) {
      repeat: -1,
      duration: 1500,
    });
-
+   scene.anims.create({
+     key: 'heal',
+     frames: scene.anims.generateFrameNames('heal', {
+       suffix: '.png',
+       start: 0,
+       end: 18,
+       zeroPad: 2
+     }),
+     repeat: 0,
+     duration: 1000,
+   });
+   scene.anims.create({
+     key: 'shield',
+     frames: scene.anims.generateFrameNames('shield', {
+       suffix: '.png',
+       prefix: 'b_',
+       start: 1,
+       end: 16,
+       zeroPad: 4
+     }),
+     repeat: 0,
+     duration: 1500,
+   });
 
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < motions.length; j++) {

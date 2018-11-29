@@ -2,9 +2,19 @@ export default class BreakOutScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BreakOutScene', active: true });
     //creae BreakOutScene
+    this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'green1.png', 'yellow1.png'];
     this.bricks;
     this.paddle;
     this.ball;
+  }
+
+  randomBricks() {
+    var brickArray = [],
+        index = 20+1;
+    while(--index) {
+      brickArray.push(Phaser.Math.RND.pick(this.brickKeys));
+    }
+    return brickArray;
   }
 
 
@@ -13,23 +23,24 @@ export default class BreakOutScene extends Phaser.Scene {
 
   }
 
-
-  create() {
-    this.physics.world.setBoundsCollision(true, true, true, false);
-
+  brickRandomizer() {
     this.bricks = this.physics.add.staticGroup({
-      key: 'assets', frame: [ 'red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'green1.png', 'red1.png', 'yellow1.png' ],
-      frameQuantity: 10,
+      key: 'assets', frame: this.randomBricks(),
+      frameQuantity: 3,
       gridAlign: { width: 10, height: 7, cellWidth: 64, cellHeight: 32, x: 112, y: 120 },
     });
-
 
     this.bricks.children.each((brick) => {
       brick.setAlpha(0.5)
       this.registry.set(brick.frame.name, brick.frame.name);
 
     });
+  }
 
+  create() {
+    this.physics.world.setBoundsCollision(true, true, true, false);
+
+    this.brickRandomizer();
 
     this.ball = this.physics.add.image(400, 555, 'assets', 'ball.png').setCollideWorldBounds(true).setBounce(1);
     this.registry.set('ballDrop');
@@ -103,11 +114,12 @@ export default class BreakOutScene extends Phaser.Scene {
 
 
   resetLevel() {
-    this.resetBall();
-
     this.bricks.children.each((brick) => {
       brick.enableBody(false, 0, 0, true, true);
+      brick.setFrame(Phaser.Math.RND.pick(this.brickKeys));
     })
+    this.resetBall();
+
   }
 
 

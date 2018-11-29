@@ -5,15 +5,14 @@ export default class Player extends CharacterSheet {
     super(scene, x, y, texture);
 
     this.type = 'knight';
-    this.depth = this.y + 84
-    this.lvl = 0;
+    this.depth = this.y + 84;
     this.xp = 0;
+    this.healAnchor;
+    this.shieldAnchor;
 
     //add hp event watcher and sync ui with currenthp
     scene.registry.set('playerHps', this.currentHps);
     this.setCurrentHp(0, 'heal');
-    scene.registry.set('playerLvl', this.lvl);
-    this.levelUp();
     scene.registry.set('playerXp', this.xp);
     this.gainXp(1);
 
@@ -22,7 +21,6 @@ export default class Player extends CharacterSheet {
 
     this.cooldowns = {
       swing: 0,
-      crush: 0,
     }
 
     this.weapons = [
@@ -86,26 +84,45 @@ export default class Player extends CharacterSheet {
     this.currentHps = 100;
     this.scene.registry.events.on('changedata', this.updateData, this);
 
+    this.addAnimationAnchor();
   };
-  updateData(parent, key, data) {
-    switch (key) {
-      case 'purple1.png':
-        this.cooldowns.swing = 0;
-        this.reCalculateStats();
-        break;
-        case 'grey1.png':
-          this.absorbShield += 5;
-          break;
-          case 'yellow1.png':
-            this.equipped.weapon.stats.crit += 10;
-            this.reCalculateStats();
-            break;
-            case 'green1.png':
-              this.setCurrentHp(10, 'heal');
-              break;
-      default:
 
+  addAnimationAnchor() {
+    this.healAnchor = this.scene.add.sprite(this.x, this.y, 'heal', '18.png');
+    this.healAnchor.setScale(.60);
+    this.healAnchor.depth = this.depth+64;
+
+    this.shieldAnchor = this.scene.add.sprite(this.x, this.y, 'shield', 'b_0016.png')
+    this.shieldAnchor.setScale(.25);
+    this.shieldAnchor.depth = this.depth+128;
+
+  }
+
+  updateData(parent, key, data) {
+    if(data === 'destroy') {
+      return;
+    } else {
+      switch (key) {
+        case 'purple1.png':
+          this.cooldowns.swing = 0;
+          this.reCalculateStats();
+          break;
+          case 'grey1.png':
+            this.absorbShield += 3;
+            break;
+            case 'yellow1.png':
+              this.equipped.weapon.stats.crit += 10;
+              this.reCalculateStats();
+              break;
+              case 'green1.png':
+                this.healAnchor.anims.play('heal', false)
+                this.setCurrentHp(10, 'heal');
+                break;
+        default:
+
+      }
     }
+
 
   }
   reCalculateStats() {
@@ -134,15 +151,12 @@ export default class Player extends CharacterSheet {
 
   //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {
-    if(this.absorbShield > 0) {
-      if(this.absorbShield >= val) {
-        this.absorbShield -= val;
-        val = 0;
-      } else {
-        val -= this.absorbShield;
-      }
-    }
     if (type === 'melee') {
+      if(this.absorbShield) {
+        this.shieldAnchor.anims.play('shield', false);
+        this.absorbShield--;
+        val = 0;
+      }
       this.currentHps -= val;
     } else if (type === 'heal') {
       this.currentHps += val;
@@ -153,7 +167,6 @@ export default class Player extends CharacterSheet {
   update() {
     if(!this.isDead()) {
       this.cooldowns.swing--;
-      this.cooldowns.crush--;
       if(this.isMoving) {
         this.running();
       } else if(this.isInCombat() && this.getCurrentTarget()) {

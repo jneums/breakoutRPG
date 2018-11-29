@@ -20,6 +20,8 @@ class BootScene extends Phaser.Scene {
   preload() {
     this.load.multiatlas('knight', 'assets/antler-knight.json', 'assets');
     this.load.multiatlas('combust', 'assets/combust.json', 'assets');
+    this.load.multiatlas('heal', 'assets/heal.json', 'assets');
+    this.load.multiatlas('shield', 'assets/shield.json', 'assets');
     this.load.json('map', 'assets/isometric-grass-and-water.json');
     this.load.spritesheet('tiles', 'assets/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('skeleton', 'assets/skeleton8.png', { frameWidth: 128, frameHeight: 128 });

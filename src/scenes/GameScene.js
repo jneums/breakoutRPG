@@ -23,16 +23,16 @@ export default class GameScene extends Phaser.Scene {
   //callback for the 'changedata' event listener
   updateData(parent, key, data) {
     if(key === 'ballDrop') {
-      this.addEnemies(3);
+      this.addEnemies(1);
     }
   }
 
   //create function
   create () {
     this.scene = this.scene.scene
-    //spawn skeletons infinitely, 5 every 30 seconds
+    //spawn skeletons infinitely
     this.skeletonSpawn = this.scene.time.addEvent({
-      delay: 30000,
+      delay: 20000,
       callback: this.addEnemies,
       callbackScope: this,
       repeat: -1,
@@ -97,7 +97,7 @@ export default class GameScene extends Phaser.Scene {
     this.scene.cameras.main.setScroll(400, 100).setZoom(1.3)
   }
 
-  addEnemies(amt = 7) {
+  addEnemies(amt = 2) {
     //add enemies
     for(let i = 0; i < amt; i++) {
        this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));

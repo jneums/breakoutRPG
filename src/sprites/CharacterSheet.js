@@ -22,8 +22,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     }
 
     this.currentTarget = undefined;
-    this.overkill = 0;
-    this.overheal = 0;
 
     this.facing = 'south';
     this.shouldUpdate = true;
@@ -189,17 +187,15 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     return this.currentHps;
   };
 
+
   setCurrentHp(val, type) {
     if (type === 'melee') {
-      console.log('type: melee');
       if( this.currentHps -= val < 0) {
-        this.overkill = (val - this.currentHps);
         this.currentHps = 0;
       }
       this.currentHps -= val;
     } else if (type === 'heal') {
       if(this.currentHps += val > this.getMaxHp()) {
-        this.overheal = (this.currentHps += val) - this.getMaxHp();
       }
       this.currentHps += val;
     }
