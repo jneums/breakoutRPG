@@ -46,7 +46,7 @@ export default class Player extends CharacterSheet {
         stats: {
           str: 5,
           agi: 5,
-          sta: 120,
+          sta: 100,
           crit: 1,
         },
       },
@@ -62,7 +62,7 @@ export default class Player extends CharacterSheet {
         stats: {
           str: 4,
           agi: 3,
-          sta: 15,
+          sta: 0,
           crit: 1,
 
         },
@@ -74,7 +74,6 @@ export default class Player extends CharacterSheet {
     this.crit;
     this.reCalculateStats();
     scene.registry.set('crit', this.crit);
-    scene.registry.set('meleeDps', (this.equipped.weapon.damage/(this.equipped.weapon.speed*60)));
 
     this.changeWeapon(this.weapons[1]);
     this.chanceToMiss = .15;
@@ -116,15 +115,15 @@ export default class Player extends CharacterSheet {
               break;
               case 'green1.png':
                 this.healAnchor.anims.play('heal', false)
-                this.setCurrentHp(10, 'heal');
+                this.setCurrentHp(10, 'heal')
                 break;
         default:
 
       }
     }
 
-
   }
+
   reCalculateStats() {
     var stats = ['str', 'sta', 'agi', 'crit']
     stats.forEach((el) => {
@@ -144,10 +143,6 @@ export default class Player extends CharacterSheet {
     this.scene.registry.set('playerXp', this.xp);
   }
 
-  levelUp() {
-    this.lvl += 1;
-    this.scene.registry.set('playerLvl', this.lvl);
-  }
 
   //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {
@@ -159,7 +154,9 @@ export default class Player extends CharacterSheet {
       }
       this.currentHps -= val;
     } else if (type === 'heal') {
-      this.currentHps += val;
+      this.currentHps + val > this.getMaxHp()
+      ? this.currentHps = this.getMaxHp()
+      : this.currentHps += val;
     }
     this.scene.registry.set('playerHps', this.currentHps)
   };
@@ -181,8 +178,6 @@ export default class Player extends CharacterSheet {
         }
       } else {
         this.idle();
-        if(this.getCurrentHps() < this.getMaxHp())
-        this.setCurrentHp(.0009, 'heal')
       }
     } else {
       this.die();

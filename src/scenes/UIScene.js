@@ -17,7 +17,9 @@ export default class UIScene extends Phaser.Scene {
     this.registry.events.on('changedata', this.updateData, this);
     //TODO repeat this for the other three ui elements
   }
-
+  reportFinalScore(score) {
+    console.log('Final Score: ' + score.toFixed(0));
+  }
   updateData(parent, key, data) {
     switch (key) {
       case 'playerHps':
@@ -29,6 +31,10 @@ export default class UIScene extends Phaser.Scene {
       case 'crit':
         this.crit.setText('Crit: ' + data.toFixed(0) + '%');
         break;
+        case 'gameOver':
+          this.reportFinalScore(data);
+          this.registry.events.off('changedata');
+          break;
       default:
 
     }

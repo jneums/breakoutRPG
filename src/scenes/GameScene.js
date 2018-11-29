@@ -32,7 +32,7 @@ export default class GameScene extends Phaser.Scene {
     this.scene = this.scene.scene
     //spawn skeletons infinitely
     this.skeletonSpawn = this.scene.time.addEvent({
-      delay: 20000,
+      delay: 25000,
       callback: this.addEnemies,
       callbackScope: this,
       repeat: -1,
@@ -91,7 +91,7 @@ export default class GameScene extends Phaser.Scene {
 
 
   addPlayer() {
-    this.player = new Player(this, 800, 524, 'knight')
+    this.player = new Player(this, 800, 480, 'knight')
     this.player.setScale(.50)
     this.player.setCircle(150, 60, 80)
     this.scene.cameras.main.setScroll(400, 100).setZoom(1.3)
@@ -107,8 +107,8 @@ export default class GameScene extends Phaser.Scene {
 
   update (time, delta) {
     if(this.player.gameOver) {
-      this.scene.registry.set('gameOver', this);
-      return;
+      return this.scene.registry.set('gameOver', this.player.xp);
+
     }
     this.skeletons.map((skeleton) => {
       if(skeleton.getShouldUpdate()) {

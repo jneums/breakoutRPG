@@ -107,33 +107,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  morphine() {
-    let amt = Phaser.Math.Between(1, this.getMaxHp());
-    this.setCurrentHp(amt, 'heal');
-  }
-
-  crush(target) {
-    this.anims.play('attack'+this.getFacing());
-    let atp = this.getAttackPower();
-    let dmg = Phaser.Math.Between(4, 8) * atp;
-
-    //if the crush cooldown is === 0, crush the target and then reset cooldown
-    if(this.cooldowns.crush <= 0) {
-      this.getCurrentTarget().setCurrentTarget(this);
-      if(!this.getCurrentTarget().isInCombat()) {
-        this.getCurrentTarget().setInCombat(true);
-      }
-
-      if(this.willCrit()) {
-        let crit = dmg * 2;
-        target.setCurrentHp(crit, 'melee')
-
-      } else {
-        target.setCurrentHp(dmg, 'melee');
-      }
-    }
-    this.cooldowns.crush = 100;
-  }
 
   meleeSwing(target) {
     this.anims.play(this.type+'_attack_'+this.getFacing());
@@ -195,15 +168,10 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       }
       this.currentHps -= val;
     } else if (type === 'heal') {
-      if(this.currentHps += val > this.getMaxHp()) {
-      }
       this.currentHps += val;
     }
   };
 
-  geCurrentLevel() {
-    return this.lvl;
-  };
 
   setCurrentTarget(target) {
     this.currentTarget = target;
