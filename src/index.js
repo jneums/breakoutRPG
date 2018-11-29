@@ -18,7 +18,8 @@ class BootScene extends Phaser.Scene {
 
   //loading up all assets before starting GameScene
   preload() {
-    this.load.multiatlas('knight', 'assets/antler-knight.json', 'assets')
+    this.load.multiatlas('knight', 'assets/antler-knight.json', 'assets');
+    this.load.multiatlas('combust', 'assets/combust.json', 'assets');
     this.load.json('map', 'assets/isometric-grass-and-water.json');
     this.load.spritesheet('tiles', 'assets/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('skeleton', 'assets/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
@@ -32,13 +33,18 @@ class BootScene extends Phaser.Scene {
 
   create() {
     this.registry.events.on('changedata', this.updateData, this);
-
+    // Pointer lock will only work after an 'engagement gesture', e.g. mousedown, keypress, etc.
+    this.game.canvas.addEventListener('mousedown', function () {
+      game.input.mouse.requestPointerLock();
+    });
   }
 
   updateData(parent, key, data) {
     if(key === 'gameOver') {
       this.scene.stop('UIScene')
       this.scene.stop('BreakOutScene')
+      game.input.mouse.releasePointerLock();
+
 
     }
   }

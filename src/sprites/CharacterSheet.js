@@ -60,12 +60,14 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       this.getCurrentTarget().clearCurrentTarget();
       this.clearCurrentTarget();
     }
-
+    this.clearTint();
     this.body.checkCollision.none = true;
-    this.disableInteractive();
+    //this.removeInteractive();
     this.setShouldUpdate(false);
     //no player die animation yet
+
     this.anims.play('skeleton' + '_die_' + this.getFacing(), true)
+
   }
 
   getRadsToCurrentTarget() {
@@ -148,9 +150,11 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       return;
     } else {
       if(this.willCrit()) {
-        let crit = dmg * 2;
+        let crit = dmg * 10;
         target.setCurrentHp(crit, 'melee')
         if(this.type === 'knight') {
+          this.equipped.weapon.stats.crit = 0;
+          this.reCalculateStats();
           this.scene.cameras.main.shake(1000, 0.01, true);
           this.gainXp(crit)
         }

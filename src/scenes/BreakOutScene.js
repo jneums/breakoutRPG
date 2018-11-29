@@ -18,10 +18,11 @@ export default class BreakOutScene extends Phaser.Scene {
     this.physics.world.setBoundsCollision(true, true, true, false);
 
     this.bricks = this.physics.add.staticGroup({
-      key: 'assets', frame: ['green1.png', 'red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'yellow1.png' ],
+      key: 'assets', frame: [ 'red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'green1.png', 'red1.png', 'yellow1.png' ],
       frameQuantity: 10,
-      gridAlign: { width: 10, height: 6, cellWidth: 64, cellHeight: 32, x: 112, y: 120 },
+      gridAlign: { width: 10, height: 7, cellWidth: 64, cellHeight: 32, x: 112, y: 120 },
     });
+
 
     this.bricks.children.each((brick) => {
       brick.setAlpha(0.5)
@@ -29,9 +30,12 @@ export default class BreakOutScene extends Phaser.Scene {
 
     });
 
+
     this.ball = this.physics.add.image(400, 555, 'assets', 'ball.png').setCollideWorldBounds(true).setBounce(1);
+    this.registry.set('ballDrop');
+
     this.ball.setData('onPaddle', true);
-    
+
 
     this.paddle = this.physics.add.image(400, 580, 'assets', 'paddle.png').setImmovable();
 
@@ -41,8 +45,10 @@ export default class BreakOutScene extends Phaser.Scene {
 
     //input events
     this.input.on('pointermove', (pointer) => {
-      //keep paddle within game
-      this.paddle.x = Phaser.Math.Clamp(pointer.x, 52, 748);
+      this.paddle.x += pointer.movementX;
+
+      // Force the sprite to stay on screen
+      this.paddle.x = Phaser.Math.Clamp(this.paddle.x, 50, 750);
 
       if(this.ball.getData('onPaddle')) {
         this.ball.x = this.paddle.x;

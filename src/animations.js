@@ -2,6 +2,20 @@
 
 function createAnimations(scene) {
   let textures = [ 'skeleton' ];
+
+   scene.anims.create({
+     key: 'combust',
+     frames: scene.anims.generateFrameNames('combust', {
+       prefix: 'fire1_ ',
+       suffix: '.png',
+       end: 14,
+       zeroPad: 2
+     }),
+     repeat: -1,
+     duration: 1500,
+   });
+
+
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < motions.length; j++) {
       scene.anims.create({

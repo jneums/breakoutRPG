@@ -17,7 +17,7 @@ export default class Skeleton extends CharacterSheet {
     this.equipped = {
       weapon: {
         name: 'Undead Revenger',
-        damage: 78,
+        damage: 100,
         speed: 1.5,
         value: 1000,
         stats: {
@@ -41,6 +41,7 @@ export default class Skeleton extends CharacterSheet {
         },
       }
     }
+
     this.str = 9 + this.calculateStats(this.equipped, 'str')
     this.sta = 9 + this.calculateStats(this.equipped, 'sta');
     this.agi = 9 + this.calculateStats(this.equipped, 'agi');
@@ -53,19 +54,29 @@ export default class Skeleton extends CharacterSheet {
     this.weaponTimer = this.equipped.weapon.speed * 60;
 
     this.scene.registry.events.on('changedata', this.updateData, this);
-
+    this.frostTint = [ '0xCEEAFA', '0x75C7FA', '0x57B6F1','0x36A4E8', '0x1187D0', '0x116FA9', '0x0A5888', '0x043F63', '0x01253B' ];
+    this.frostTintIndex = -1;
   };
 
   updateData(parent, key, data) {
     switch (key) {
       case 'red1.png':
         if(this) {
-          this.setCurrentHp(this.getMaxHp()*.25, 'melee');
+
+          if(!this.isDead()) {
+            this.setCurrentHp((this.getMaxHp()*.25), 'melee');
+            this.anims.play('combust', false)
+            this.frostTintIndex = 0;
+            this.clearTint();
+          }
         }
         break;
         case 'blue1.png':
           this.equipped.weapon.speed += 1;
           this.weaponTimer = this.equipped.weapon.speed * 60
+          if(!this.isDead()) {
+            this.setTint(this.frostTint[++this.frostTintIndex])
+          }
           break;
       default:
 

@@ -14,25 +14,23 @@ export default class GameScene extends Phaser.Scene {
     this.player;
     //array of enemies
     this.skeletons = [];
-    //invisible object to move toward,
-    //stops player when he runs into it
-    this.moveTarget;
 
     this.d = 0;
     this.scene;
 
-
   }
+
+  //callback for the 'changedata' event listener
   updateData(parent, key, data) {
     if(key === 'ballDrop') {
-      this.addEnemies(2);
+      this.addEnemies(3);
     }
   }
 
+  //create function
   create () {
     this.scene = this.scene.scene
-    this.background = this.add.image(1450, 300, 'background')
-    //spawn skeletons infinitely
+    //spawn skeletons infinitely, 5 every 30 seconds
     this.skeletonSpawn = this.scene.time.addEvent({
       delay: 30000,
       callback: this.addEnemies,
@@ -43,20 +41,10 @@ export default class GameScene extends Phaser.Scene {
     this.scene.registry.events.on('changedata', this.updateData, this);
     //set up scene
     this.buildMap();
-    this.placeHouses();
     this.addPlayer();
     this.addEnemies();
-    //set up click to move target
-    this.moveTarget = this.physics.add.image(25, 25, 'star');
-    this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
 
-
-    //stop the player at the moveTarget, or at the hitbox of the enemy
-    this.physics.add.overlap(this.player, this.moveTarget, function (playerOnMoveTarget) {
-      playerOnMoveTarget.isMoving = false;
-      playerOnMoveTarget.body.stop();
-    }, null, this);
-
+    //stops the skeletons from moving through the player
     this.physics.add.overlap(this.skeletons, this.player, function (playerOnEnemy) {
       playerOnEnemy.isMoving = false;
       playerOnEnemy.body.stop()
@@ -101,42 +89,21 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  placeHouses() {
-    var house = this.scene.add.image(240, 370, 'house');
-    house.depth = house.y + 86;
-    house = this.scene.add.image(1300, 290, 'house');
-    house.depth = house.y + 86;
-  }
 
   addPlayer() {
-    this.player = new Player(this, 800, 464, 'knight')
+    this.player = new Player(this, 800, 524, 'knight')
     this.player.setScale(.50)
     this.player.setCircle(150, 60, 80)
-    this.scene.cameras.main.setScroll(400, 100).setZoom(1.4)
+    this.scene.cameras.main.setScroll(400, 100).setZoom(1.3)
   }
 
-  addEnemies(amt = 5) {
+  addEnemies(amt = 7) {
     //add enemies
-    for(let i = 0; i<amt; i++) {
+    for(let i = 0; i < amt; i++) {
        this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
-       this.skeletons[i].setCircle(50, 15, 20)
-       this.skeletons[i].on('clicked', clickHandler, this);
-       //this.skeletons[i].setCurrentTarget(this.player)
-       //this.skeletons[i].setInCombat(true)
-
+       this.skeletons[i].setCircle(50, 15, 20);
      }
-    //skeleton emits when clicked
-    this.input.on('gameobjectup', function (pointer, gameObject) {
-      gameObject.emit('clicked', gameObject);
-    }, this);
-
-    //what to do when skeleton emits 'clicked'
-    function clickHandler(enemy) {
-      this.player.setCurrentTarget(enemy);
-      enemy.setCurrentHp(0, 'heal');
-      this.player.setInCombat(true);
-    };
-  }
+   }
 
   update (time, delta) {
     if(this.player.gameOver) {

@@ -49,7 +49,7 @@ export default class Player extends CharacterSheet {
           str: 5,
           agi: 5,
           sta: 120,
-          crit: 1.5,
+          crit: 1,
         },
       },
     ]
@@ -70,10 +70,11 @@ export default class Player extends CharacterSheet {
         },
       },
     }
-    this.str = 19 + this.calculateStats(this.equipped, 'str')
-    this.sta = 19 + this.calculateStats(this.equipped, 'sta');
-    this.agi = 19 + this.calculateStats(this.equipped, 'agi');
-    this.crit = 15 + this.calculateStats(this.equipped, 'crit');
+    this.str;
+    this.sta;
+    this.agi;
+    this.crit;
+    this.reCalculateStats();
     scene.registry.set('crit', this.crit);
     scene.registry.set('meleeDps', (this.equipped.weapon.damage/(this.equipped.weapon.speed*60)));
 
@@ -89,14 +90,14 @@ export default class Player extends CharacterSheet {
   updateData(parent, key, data) {
     switch (key) {
       case 'purple1.png':
-        this.equipped.weapon.damage += 5;
+        this.cooldowns.swing = 0;
         this.reCalculateStats();
         break;
         case 'grey1.png':
           this.absorbShield += 5;
           break;
           case 'yellow1.png':
-            this.equipped.weapon.stats.crit += .5;
+            this.equipped.weapon.stats.crit += 10;
             this.reCalculateStats();
             break;
             case 'green1.png':
@@ -110,16 +111,17 @@ export default class Player extends CharacterSheet {
   reCalculateStats() {
     var stats = ['str', 'sta', 'agi', 'crit']
     stats.forEach((el) => {
-      console.log();
-      this[el] = 19 + this.calculateStats(this.equipped, el);
+      this[el] = this.calculateStats(this.equipped, el);
     })
     this.scene.registry.set('meleeDps', ((this.equipped.weapon.damage * this.getAttackPower()) + this.equipped.weapon.damage) /60)
     this.scene.registry.set('crit', this.crit)
   }
+
   changeWeapon(weapon) {
     this.equipped.weapon = Object.assign(weapon);
     this.reCalculateStats();
   }
+
   gainXp(amt) {
     this.xp += amt;
     this.scene.registry.set('playerXp', this.xp);
@@ -129,6 +131,7 @@ export default class Player extends CharacterSheet {
     this.lvl += 1;
     this.scene.registry.set('playerLvl', this.lvl);
   }
+
   //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {
     if(this.absorbShield > 0) {
@@ -171,7 +174,7 @@ export default class Player extends CharacterSheet {
     } else {
       this.die();
       this.scene.cameras.main.fade(1000, 0,0,0)
-      console.log("you died");
+      console.log("you died!");;
       this.gameOver = true;
     }
   }
