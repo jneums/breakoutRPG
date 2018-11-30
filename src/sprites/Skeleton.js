@@ -17,7 +17,7 @@ export default class Skeleton extends CharacterSheet {
     this.equipped = {
       weapon: {
         name: 'Undead Revenger',
-        damage: 130,
+        damage: 90,
         speed: 1.1,
         value: 1000,
         stats: {
@@ -56,6 +56,9 @@ export default class Skeleton extends CharacterSheet {
     this.scene.registry.events.on('changedata', this.updateData, this);
     this.frostTint = [ '0xCEEAFA', '0x75C7FA', '0x57B6F1','0x36A4E8', '0x1187D0', '0x116FA9', '0x0A5888', '0x043F63', '0x01253B' ];
     this.frostTintIndex = -1;
+
+    this.burnSound = this.scene.sound.add('foom');
+    this.freezeSound = this.scene.sound.add('freeze');
   };
 
   updateData(parent, key, data) {
@@ -66,6 +69,13 @@ export default class Skeleton extends CharacterSheet {
 
             if(!this.isDead()) {
               this.setCurrentHp((this.getMaxHp()*.25), 'melee');
+              this.burnSound.play({
+                mute: false,
+                volume: .5,
+                rate: .8,
+                detune: 0,
+                loop: false,
+              })
               this.anims.play('combust', false)
               this.frostTintIndex = 0;
               this.clearTint();
@@ -77,6 +87,12 @@ export default class Skeleton extends CharacterSheet {
             this.weaponTimer = this.equipped.weapon.speed * 60
             if(!this.isDead()) {
               this.setTint(this.frostTint[++this.frostTintIndex])
+              this.freezeSound.play({
+                mute: false,
+                volume: .2,
+                rate: 2,
+                loop: false,
+              })
             }
             break;
         default:

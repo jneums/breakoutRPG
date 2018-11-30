@@ -18,6 +18,8 @@ class BootScene extends Phaser.Scene {
 
   //loading up all assets before starting GameScene
   preload() {
+    this.load.audio('foom', '/assets/foom_0.mp3');
+    this.load.audio('freeze', '/assets/freeze.mp3');
     this.load.multiatlas('knight', 'assets/antler-knight.json', 'assets');
     this.load.multiatlas('combust', 'assets/combust.json', 'assets');
     this.load.multiatlas('heal', 'assets/heal.json', 'assets');
@@ -43,7 +45,6 @@ class BootScene extends Phaser.Scene {
 
   updateData(parent, key, data) {
     if(key === 'gameOver') {
-      this.scene.stop('UIScene')
       this.scene.stop('BreakOutScene')
       game.input.mouse.releasePointerLock();
 

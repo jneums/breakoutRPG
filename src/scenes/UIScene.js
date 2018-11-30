@@ -32,7 +32,9 @@ export default class UIScene extends Phaser.Scene {
         this.crit.setText('Crit: ' + data.toFixed(0) + '%');
         break;
         case 'gameOver':
-          this.reportFinalScore(data);
+          this.xpText.setOrigin(0).setPosition(350, 300);
+          this.crit.setText("Game Over!").setOrigin(0).setPosition(350, 270)
+          this.hpText.setText('');
           this.registry.events.off('changedata');
           break;
       default:

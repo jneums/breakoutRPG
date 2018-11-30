@@ -31,7 +31,7 @@ export default class BreakOutScene extends Phaser.Scene {
     });
 
     this.bricks.children.each((brick) => {
-      brick.setAlpha(0.5)
+      brick.setAlpha(0.7)
       this.registry.set(brick.frame.name, brick.frame.name);
 
     });
@@ -68,7 +68,7 @@ export default class BreakOutScene extends Phaser.Scene {
 
     this.input.on('pointerup', (pointer) => {
       if(this.ball.getData('onPaddle')) {
-        this.ball.setVelocity(-75, -300);
+        this.ball.setVelocity(-75, -470);
         this.ball.setData('onPaddle', false);
       }
     }, this);

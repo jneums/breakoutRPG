@@ -4,11 +4,32 @@
 			"image": "combust.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 975,
+				"w": 949,
 				"h": 130
 			},
 			"scale": 1,
 			"frames": [
+				{
+					"filename": "fire1_ 13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 128,
+						"h": 128
+					},
+					"spriteSourceSize": {
+						"x": 37,
+						"y": 14,
+						"w": 49,
+						"h": 113
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 49,
+						"h": 113
+					}
+				},
 				{
 					"filename": "fire1_ 07.png",
 					"rotated": false,
@@ -24,7 +45,7 @@
 						"h": 115
 					},
 					"frame": {
-						"x": 1,
+						"x": 52,
 						"y": 1,
 						"w": 75,
 						"h": 115
@@ -45,7 +66,7 @@
 						"h": 117
 					},
 					"frame": {
-						"x": 78,
+						"x": 129,
 						"y": 1,
 						"w": 72,
 						"h": 117
@@ -66,7 +87,7 @@
 						"h": 123
 					},
 					"frame": {
-						"x": 152,
+						"x": 203,
 						"y": 1,
 						"w": 72,
 						"h": 123
@@ -87,7 +108,7 @@
 						"h": 125
 					},
 					"frame": {
-						"x": 226,
+						"x": 277,
 						"y": 1,
 						"w": 72,
 						"h": 125
@@ -108,7 +129,7 @@
 						"h": 126
 					},
 					"frame": {
-						"x": 300,
+						"x": 351,
 						"y": 1,
 						"w": 78,
 						"h": 126
@@ -129,7 +150,7 @@
 						"h": 127
 					},
 					"frame": {
-						"x": 380,
+						"x": 431,
 						"y": 1,
 						"w": 70,
 						"h": 127
@@ -150,7 +171,7 @@
 						"h": 128
 					},
 					"frame": {
-						"x": 452,
+						"x": 503,
 						"y": 1,
 						"w": 67,
 						"h": 128
@@ -171,7 +192,7 @@
 						"h": 128
 					},
 					"frame": {
-						"x": 521,
+						"x": 572,
 						"y": 1,
 						"w": 74,
 						"h": 128
@@ -192,7 +213,7 @@
 						"h": 128
 					},
 					"frame": {
-						"x": 597,
+						"x": 648,
 						"y": 1,
 						"w": 77,
 						"h": 128
@@ -213,7 +234,7 @@
 						"h": 128
 					},
 					"frame": {
-						"x": 676,
+						"x": 727,
 						"y": 1,
 						"w": 72,
 						"h": 128
@@ -234,7 +255,7 @@
 						"h": 128
 					},
 					"frame": {
-						"x": 750,
+						"x": 801,
 						"y": 1,
 						"w": 69,
 						"h": 128
@@ -255,30 +276,9 @@
 						"h": 128
 					},
 					"frame": {
-						"x": 821,
+						"x": 872,
 						"y": 1,
 						"w": 76,
-						"h": 128
-					}
-				},
-				{
-					"filename": "fire1_ 13.png",
-					"rotated": false,
-					"trimmed": true,
-					"sourceSize": {
-						"w": 128,
-						"h": 128
-					},
-					"spriteSourceSize": {
-						"x": 28,
-						"y": 0,
-						"w": 75,
-						"h": 128
-					},
-					"frame": {
-						"x": 899,
-						"y": 1,
-						"w": 75,
 						"h": 128
 					}
 				}
@@ -288,6 +288,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:c7a9a2ccbd63c70becb42c55aad32c9d:65bdbd8700a436b294a67d04eb4743ab:9a5681ea6f59546aca97c903bfb5e52f$"
+		"smartupdate": "$TexturePacker:SmartUpdate:42a8150b876041fe656a435aec37f14f:480553a58173bf7cbe11aefc42a29fd6:9a5681ea6f59546aca97c903bfb5e52f$"
 	}
 }

@@ -9,10 +9,10 @@ function createAnimations(scene) {
      frames: scene.anims.generateFrameNames('combust', {
        prefix: 'fire1_ ',
        suffix: '.png',
-       end: 14,
+       end: 13,
        zeroPad: 2
      }),
-     repeat: -1,
+     repeat: 0,
      duration: 1500,
    });
    scene.anims.create({

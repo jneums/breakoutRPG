@@ -107,7 +107,7 @@ export default class Player extends CharacterSheet {
           this.reCalculateStats();
           break;
           case 'grey1.png':
-            this.absorbShield += 3;
+            this.absorbShield += 5;
             break;
             case 'yellow1.png':
               this.equipped.weapon.stats.crit += 10;
@@ -115,7 +115,7 @@ export default class Player extends CharacterSheet {
               break;
               case 'green1.png':
                 this.healAnchor.anims.play('heal', false)
-                this.setCurrentHp(10, 'heal')
+                this.setCurrentHp(20, 'heal')
                 break;
         default:
 

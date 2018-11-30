@@ -97,7 +97,7 @@ export default class GameScene extends Phaser.Scene {
     this.scene.cameras.main.setScroll(400, 100).setZoom(1.3)
   }
 
-  addEnemies(amt = 2) {
+  addEnemies(amt = 5) {
     //add enemies
     for(let i = 0; i < amt; i++) {
        this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
