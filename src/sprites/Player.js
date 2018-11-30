@@ -79,11 +79,14 @@ export default class Player extends CharacterSheet {
     this.chanceToMiss = .15;
 
     this.weaponTimer = this.equipped.weapon.speed * 60;
-    this.absorbShield = 0;
+
     this.currentHps = 100;
     this.scene.registry.events.on('changedata', this.updateData, this);
 
     this.addAnimationAnchor();
+    this.healSound = this.scene.sound.add('heal');
+    this.absorbSound = this.scene.sound.add('absorb');
+
   };
 
   addAnimationAnchor() {
@@ -114,6 +117,13 @@ export default class Player extends CharacterSheet {
               this.reCalculateStats();
               break;
               case 'green1.png':
+                this.healSound.play({
+                  mute: false,
+                  volume: .9,
+                  rate: 1.5,
+                  detune: 0,
+                  loop: false,
+                })
                 this.healAnchor.anims.play('heal', false)
                 this.setCurrentHp(20, 'heal')
                 break;
@@ -147,11 +157,6 @@ export default class Player extends CharacterSheet {
   //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {
     if (type === 'melee') {
-      if(this.absorbShield) {
-        this.shieldAnchor.anims.play('shield', false);
-        this.absorbShield--;
-        val = 0;
-      }
       this.currentHps -= val;
     } else if (type === 'heal') {
       this.currentHps + val > this.getMaxHp()

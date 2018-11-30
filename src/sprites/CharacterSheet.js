@@ -7,7 +7,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.setTexture(texture);
     this.type = texture;
     this.depth = this.y + 64;
-    //TODO fix depth sorting, especially in map creator
+    this.absorbShield = 0;
 
 
     scene.add.existing(this);
@@ -15,7 +15,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
 
     this.motion = 'idle';
-    this.speed = 0.15;
     this.inCombat = false;
     this.cooldowns = {
       swing: 0,
@@ -25,6 +24,9 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
     this.facing = 'south';
     this.shouldUpdate = true;
+    this.missMeleeSwing = this.scene.sound.add('miss');
+    this.hitMeleeSwing = this.scene.sound.add('clash');
+    this.critMeleeSwing = this.scene.sound.add('crit');
 
   };
 
@@ -107,29 +109,70 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  absorbShieldAmt(target, amt) {
+    if(target.absorbShield) {
+        target.absorbSound.play({
+          mute: false,
+          volume: .9,
+          rate: 2,
+          detune: 0,
+          loop: false,
+        });
+        target.shieldAnchor.anims.play('shield', false);
+        target.absorbShield--;
+        amt = 0;
+    }
+    return amt;
+  }
+
 
   meleeSwing(target) {
     this.anims.play(this.type+'_attack_'+this.getFacing());
     let dmg = ((this.equipped.weapon.damage * this.getAttackPower()) + this.equipped.weapon.damage) /60;
+    dmg = this.absorbShieldAmt(target, dmg);
+    let miss = Phaser.Math.Between(0, 100) < 34;
     if(!this.getCurrentTarget().getCurrentTarget()) {
       this.getCurrentTarget().setCurrentTarget(this);
     }
     if(!this.getCurrentTarget().isInCombat()) {
       this.getCurrentTarget().setInCombat(true);
     }
-    if(Phaser.Math.Between(0, 100) < 34) {
-      return;
-    } else {
+    if(miss) {
+      //miss melee swing
+      this.cooldowns.swing = this.weaponTimer;
+      return this.missMeleeSwing.play({
+        mute: false,
+        volume: .3,
+        rate: .8,
+        detune: 0,
+      });
+
+    } else if(!miss && dmg) {
       if(this.willCrit()) {
         let crit = dmg * 10;
         target.setCurrentHp(crit, 'melee')
         if(this.type === 'knight') {
+          this.critMeleeSwing.play({
+            mute: false,
+            volume: .8,
+            rate: 2,
+            detune: 0,
+            delay: .7,
+          });
           this.equipped.weapon.stats.crit = 0;
           this.reCalculateStats();
           this.scene.cameras.main.shake(1000, 0.01, true);
           this.gainXp(crit)
         }
       } else {
+        let delay = this.type === 'knight' ? .9 : .5;
+        this.hitMeleeSwing.play({
+          mute: false,
+          volume: .3,
+          rate: .8,
+          detune: 0,
+          delay: delay,
+        });
         target.setCurrentHp(dmg, 'melee');
         if(this.type === 'knight') {
           this.gainXp(dmg)

@@ -17,6 +17,8 @@ export default class GameScene extends Phaser.Scene {
 
     this.d = 0;
     this.scene;
+    this.backgroundMusic;
+
 
   }
 
@@ -30,9 +32,19 @@ export default class GameScene extends Phaser.Scene {
   //create function
   create () {
     this.scene = this.scene.scene
+
+    this.backgroundMusic = this.scene.sound.add('music');
+
+    this.backgroundMusic.play({
+      mute: false,
+      volume: .9,
+      rate: 1,
+      loop: true,
+    })
+
     //spawn skeletons infinitely
     this.skeletonSpawn = this.scene.time.addEvent({
-      delay: 25000,
+      delay: 15000,
       callback: this.addEnemies,
       callbackScope: this,
       repeat: -1,
@@ -97,7 +109,7 @@ export default class GameScene extends Phaser.Scene {
     this.scene.cameras.main.setScroll(400, 100).setZoom(1.3)
   }
 
-  addEnemies(amt = 5) {
+  addEnemies(amt = 3) {
     //add enemies
     for(let i = 0; i < amt; i++) {
        this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));

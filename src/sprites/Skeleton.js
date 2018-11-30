@@ -18,7 +18,7 @@ export default class Skeleton extends CharacterSheet {
       weapon: {
         name: 'Undead Revenger',
         damage: 90,
-        speed: 1.1,
+        speed: 1,
         value: 1000,
         stats: {
           str: 2,
@@ -71,7 +71,7 @@ export default class Skeleton extends CharacterSheet {
               this.setCurrentHp((this.getMaxHp()*.25), 'melee');
               this.burnSound.play({
                 mute: false,
-                volume: .5,
+                volume: .3,
                 rate: .8,
                 detune: 0,
                 loop: false,
@@ -89,7 +89,7 @@ export default class Skeleton extends CharacterSheet {
               this.setTint(this.frostTint[++this.frostTintIndex])
               this.freezeSound.play({
                 mute: false,
-                volume: .2,
+                volume: .1,
                 rate: 2,
                 loop: false,
               })

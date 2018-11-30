@@ -6,6 +6,8 @@ export default class BreakOutScene extends Phaser.Scene {
     this.bricks;
     this.paddle;
     this.ball;
+    this.blockHitSound;
+    this.paddleHitSound;
   }
 
   randomBricks() {
@@ -38,6 +40,9 @@ export default class BreakOutScene extends Phaser.Scene {
   }
 
   create() {
+
+    this.blockHitSound = this.scene.scene.sound.add('block');
+    this.paddleHitSound = this.scene.scene.sound.add('paddle');
     this.physics.world.setBoundsCollision(true, true, true, false);
 
     this.brickRandomizer();
@@ -68,7 +73,7 @@ export default class BreakOutScene extends Phaser.Scene {
 
     this.input.on('pointerup', (pointer) => {
       if(this.ball.getData('onPaddle')) {
-        this.ball.setVelocity(-75, -470);
+        this.ball.setVelocity(-75, -420);
         this.ball.setData('onPaddle', false);
       }
     }, this);
@@ -77,6 +82,13 @@ export default class BreakOutScene extends Phaser.Scene {
 
 
   hitBrick(ball, brick) {
+    this.paddleHitSound.play({
+      mute: false,
+      volume: .6,
+      rate: .8,
+      detune: 0,
+      loop: false,
+    })
     brick.disableBody(true, true);
     switch (brick.frame.name) {
       case 'purple1.png':
@@ -124,6 +136,13 @@ export default class BreakOutScene extends Phaser.Scene {
 
 
   hitPaddle(ball, paddle) {
+    this.blockHitSound.play({
+      mute: false,
+      volume: .6,
+      rate: .8,
+      detune: 0,
+      loop: false,
+    })
     var diff = 0;
 
     if(ball.x < paddle.x) {
