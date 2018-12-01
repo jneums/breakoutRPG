@@ -5,6 +5,19 @@ function createAnimations(scene) {
 
    //use .map to create all anims at once
    scene.anims.create({
+     key: 'button',
+     frames: scene.anims.generateFrameNames('button', {
+       prefix: 'blue_button',
+       suffix: '.png',
+       start: 1,
+       end: 2,
+       zeroPad: 2
+     }),
+     repeat: 0,
+     duration: 500,
+     yoyo: true,
+   });
+   scene.anims.create({
      key: 'combust',
      frames: scene.anims.generateFrameNames('combust', {
        prefix: 'fire1_ ',

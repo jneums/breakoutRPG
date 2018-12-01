@@ -1,0 +1,83 @@
+{
+	"textures": [
+		{
+			"image": "button.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 402,
+				"h": 453
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "blue_panel_breakoutRPG.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 400,
+						"h": 400
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 400,
+						"h": 400
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 400,
+						"h": 400
+					}
+				},
+				{
+					"filename": "blue_button00.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 190,
+						"h": 49
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 190,
+						"h": 49
+					},
+					"frame": {
+						"x": 1,
+						"y": 403,
+						"w": 190,
+						"h": 49
+					}
+				},
+				{
+					"filename": "blue_button01.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 190,
+						"h": 45
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 190,
+						"h": 45
+					},
+					"frame": {
+						"x": 193,
+						"y": 403,
+						"w": 190,
+						"h": 45
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:e13f6e98be1f086eef64929a0e69d074:50fa97118c94248833c5bd08e4f55c51:c39245c3a59c1712d97d26c862b4cbc5$"
+	}
+}

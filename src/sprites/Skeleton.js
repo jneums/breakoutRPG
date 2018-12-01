@@ -17,8 +17,8 @@ export default class Skeleton extends CharacterSheet {
     this.equipped = {
       weapon: {
         name: 'Undead Revenger',
-        damage: 90,
-        speed: 1,
+        damage: 50,
+        speed: .8,
         value: 1000,
         stats: {
           str: 2,

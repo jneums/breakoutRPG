@@ -186,9 +186,9 @@ export default class Player extends CharacterSheet {
       }
     } else {
       this.die();
-      this.scene.cameras.main.fade(1000, 0,0,0)
-      console.log("you died!");;
+      console.log("you died!");
       this.gameOver = true;
+
     }
   }
 }
