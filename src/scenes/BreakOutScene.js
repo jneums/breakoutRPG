@@ -1,6 +1,6 @@
 export default class BreakOutScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'BreakOutScene', active: true });
+    super({ key: 'BreakOutScene' });
     //creae BreakOutScene
     this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'green1.png', 'yellow1.png'];
     this.bricks;

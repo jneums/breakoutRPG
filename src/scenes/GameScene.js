@@ -31,8 +31,8 @@ export default class GameScene extends Phaser.Scene {
 
   //create function
   create () {
-    this.scene = this.scene.scene
 
+    this.scene = this.scene.scene
     this.backgroundMusic = this.scene.sound.add('music');
 
     this.backgroundMusic.play({
@@ -61,6 +61,7 @@ export default class GameScene extends Phaser.Scene {
       playerOnEnemy.isMoving = false;
       playerOnEnemy.body.stop()
     }, null, this);
+
 
   }
 

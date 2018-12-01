@@ -32,10 +32,12 @@ export default class UIScene extends Phaser.Scene {
         this.crit.setText('Crit: ' + data.toFixed(0) + '%');
         break;
         case 'gameOver':
-          this.xpText.setOrigin(0).setPosition(350, 300);
-          this.crit.setText("Game Over!").setOrigin(0).setPosition(350, 270)
-          this.hpText.setText('');
+          this.xpText.setPosition(350, 330);
+          this.crit.setText("Game Over!").setPosition(250, 270).setScale(3)
+          this.hpText.setText('(reload page to play again!)').setPosition(255, 380);
           this.registry.events.off('changedata');
+          this.scene.scene.cameras.main.setBackgroundColor('0x000000')
+          this.scene.stop('GameScene')
           break;
       default:
 
