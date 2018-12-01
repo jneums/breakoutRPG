@@ -63,9 +63,6 @@ var config = {
   height: 600,
   backgroundColor: '#ababab',
   parent: 'phaser-example',
-  audio: {
-    noAudio: true
-  },
   physics: {
     default: 'arcade',
     arcade: {
