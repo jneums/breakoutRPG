@@ -1,12 +1,14 @@
 # Phaser 3 Isometric RPG
 
-A Phaser 3 based isometric role playing game.
-Will either be fantasy or science fiction, still need to decide
-and start looking for sprites.
+This game started out at "A Phaser 3 based isometric role playing game".
+After I saw the Game Off 2018 jam on Itch.io I decided to take a break from the RPG 
+and added in the breakout scene, and attaching the bricks to actions in the RPG game.
 
-Mostly working on the combat and movement mechanics first.
-would like to create a very short scenario to test mechanics,
-and work on a full story and design after that.
+I will probably go back to the RPG now that the Game Off is over. 
+If anyone wants to work on it that would be fun. I am just starting
+out so I would appreciate the experience.
+
+
 
 ### Requirements
 
