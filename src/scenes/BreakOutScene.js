@@ -1,17 +1,19 @@
 export default class BreakOutScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BreakOutScene' });
-    this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'purple1.png', 'green1.png', 'yellow1.png', 'yellow1.png'];
+    this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'purple1.png', 'green1.png', 'yellow1.png'];
     this.bricks;
     this.paddle;
     this.ball;
     this.blockHitSound;
     this.paddleHitSound;
+    this.width;
+    this.height;
   }
 
   randomBricks() {
     var brickArray = [],
-        index = 20+1;
+        index = 28+1;
     while(--index) {
       brickArray.push(Phaser.Math.RND.pick(this.brickKeys));
     }
@@ -21,8 +23,8 @@ export default class BreakOutScene extends Phaser.Scene {
   brickRandomizer() {
     this.bricks = this.physics.add.staticGroup({
       key: 'assets', frame: this.randomBricks(),
-      frameQuantity: 3,
-      gridAlign: { width: 10, height: 6, cellWidth: 64, cellHeight: 32, x: 112, y: 120 },
+      frameQuantity: 4,
+      gridAlign: { width: 16, height: 7, cellWidth: 64, cellHeight: 32, x: 128, y: 128 },
     });
 
     this.bricks.children.each((brick) => {
@@ -33,19 +35,20 @@ export default class BreakOutScene extends Phaser.Scene {
   }
 
   create() {
-
+    this.width = this.game.config.width;
+    this.height = this.game.config.height;
     this.blockHitSound = this.scene.scene.sound.add('block');
     this.paddleHitSound = this.scene.scene.sound.add('paddle');
     this.physics.world.setBoundsCollision(true, true, true, false);
 
     this.brickRandomizer();
 
-    this.ball = this.physics.add.image(400, 555, 'assets', 'ball.png').setCollideWorldBounds(true).setBounce(1);
+    this.paddle = this.physics.add.image((this.width / 2), (this.height - 50), 'assets', 'paddle.png').setImmovable();
+
+    this.ball = this.physics.add.image(this.paddle.x, (this.height - 76), 'assets', 'ball.png').setCollideWorldBounds(true).setBounce(1);
     this.registry.set('ballDrop');
 
     this.ball.setData('onPaddle', true);
-
-    this.paddle = this.physics.add.image(400, 580, 'assets', 'paddle.png').setImmovable();
 
     //setColliders
     this.physics.add.collider(this.ball, this.bricks, this.hitBrick, null, this);
@@ -56,8 +59,7 @@ export default class BreakOutScene extends Phaser.Scene {
       this.paddle.x += pointer.movementX;
 
       // Force the sprite to stay on screen
-      this.paddle.x = Phaser.Math.Clamp(this.paddle.x, 50, 750);
-
+      this.paddle.x = Phaser.Math.Clamp(this.paddle.x, 50, this.width - 50);
       if(this.ball.getData('onPaddle')) {
         this.ball.x = this.paddle.x;
       }
@@ -110,7 +112,7 @@ export default class BreakOutScene extends Phaser.Scene {
 
   resetBall() {
     this.ball.setVelocity(0);
-    this.ball.setPosition(this.paddle.x, 555);
+    this.ball.setPosition(this.paddle.x, (this.height - 76));
     this.ball.setData('onPaddle', true);
   }
 
@@ -150,7 +152,7 @@ export default class BreakOutScene extends Phaser.Scene {
 
 
   update(time, delta) {
-    if(this.ball.y > 600) {
+    if(this.ball.y > (this.height)) {
       this.registry.set('ballDrop', this.ball);
       this.resetBall();
     }
