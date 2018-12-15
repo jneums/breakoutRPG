@@ -4,16 +4,11 @@ export default class Skeleton extends CharacterSheet {
   constructor (scene, x, y, texture) {
     super(scene, x, y, texture);
 
-
-
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.setInteractive();
 
-    //quick start of inventory system.
-    //items will be in very large json
-    //and referenced here.
     this.equipped = {
       weapon: {
         name: 'Undead Revenger',
@@ -59,18 +54,14 @@ export default class Skeleton extends CharacterSheet {
 
     this.burnSound = this.scene.sound.add('foom');
     this.freezeSound = this.scene.sound.add('freeze');
-
     this.loot;
-
   };
 
   generateLoot(recipient) {
     recipient.inventory.gold += 100;
     recipient.inventory.items.push(this.equipped.weapon);
     console.log(recipient.inventory);
-
   }
-
 
   updateData(parent, key, data) {
     if(data !== 'destroy') {
@@ -82,26 +73,22 @@ export default class Skeleton extends CharacterSheet {
             }
           }
           break;
-          case 'blue1.png':
-
-            if(!this.isDead() && Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 75) {
-              this.equipped.weapon.speed += (.25 * this.equipped.weapon.speed);
-              this.weaponTimer = this.equipped.weapon.speed * 60
-
-              this.setTint(this.frostTint[++this.frostTintIndex])
-              this.freezeSound.play({
-                mute: false,
-                volume: .1,
-                rate: 2,
-                loop: false,
-              })
-            }
-            break;
+        case 'blue1.png':
+          if(!this.isDead() && Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 75) {
+            this.equipped.weapon.speed += (.25 * this.equipped.weapon.speed);
+            this.weaponTimer = this.equipped.weapon.speed * 60;
+            this.setTint(this.frostTint[++this.frostTintIndex])
+            this.freezeSound.play({
+              mute: false,
+              volume: .1,
+              rate: 2,
+              loop: false,
+            })
+          }
+          break;
         default:
-
       }
     }
-
   }
 
   reCalculateStats() {
@@ -128,7 +115,6 @@ export default class Skeleton extends CharacterSheet {
   update() {
     this.nameText.setPosition(this.x - 34, this.y - 56).depth = this.y + 128;
 
-
     this.cooldowns.swing--;
 
     if(Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 200) {
@@ -143,12 +129,9 @@ export default class Skeleton extends CharacterSheet {
         this.depth = this.y + 64;
       } else if(Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 75 && this.cooldowns.swing <= 0) {
         this.anims.play(this.name+'_attack_'+this.getFacing(), true);
-
       }
     } else {
       this.idle();
-
     }
-
   }
 }

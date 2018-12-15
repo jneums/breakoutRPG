@@ -57,10 +57,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
         this.clearTint();
       }
     }, this);
-
     this.currentHps = this.getMaxHp();
-
-
   };
 
   calculateStats(equipped, stat) {
@@ -99,9 +96,8 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       this.body.checkCollision.none = true;
       //this.removeInteractive();
       this.setShouldUpdate(false);
-      //no player die animation yet
     }
-
+    //no player die animation yet
     this.anims.play('skeleton' + '_die_' + this.getFacing(), true)
   }
 
@@ -276,5 +272,4 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
      return false;
    }
  };
-
 }

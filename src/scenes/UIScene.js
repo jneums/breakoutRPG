@@ -19,7 +19,6 @@ export default class UIScene extends Phaser.Scene {
     this.targetHpText = this.add.text(650, 10)
     this.crit = this.add.text(30, 50)
     this.registry.events.on('changedata', this.updateData, this);
-    //TODO repeat this for the other three ui elements
   }
 
   updateData(parent, key, data) {

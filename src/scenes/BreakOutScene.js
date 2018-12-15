@@ -1,7 +1,6 @@
 export default class BreakOutScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BreakOutScene' });
-    //creae BreakOutScene
     this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'purple1.png', 'green1.png', 'yellow1.png', 'yellow1.png'];
     this.bricks;
     this.paddle;
@@ -17,12 +16,6 @@ export default class BreakOutScene extends Phaser.Scene {
       brickArray.push(Phaser.Math.RND.pick(this.brickKeys));
     }
     return brickArray;
-  }
-
-
-  preload() {
-    this.load.atlas('assets', 'assets/breakout.png', 'assets/breakout.json');
-
   }
 
   brickRandomizer() {
@@ -52,7 +45,6 @@ export default class BreakOutScene extends Phaser.Scene {
 
     this.ball.setData('onPaddle', true);
 
-
     this.paddle = this.physics.add.image(400, 580, 'assets', 'paddle.png').setImmovable();
 
     //setColliders
@@ -80,7 +72,6 @@ export default class BreakOutScene extends Phaser.Scene {
 
   }
 
-
   hitBrick(ball, brick) {
     this.paddleHitSound.play({
       mute: false,
@@ -94,23 +85,22 @@ export default class BreakOutScene extends Phaser.Scene {
       case 'purple1.png':
         this.registry.set('purple1.png', brick.frame.name);
         break;
-        case 'grey1.png':
-          this.registry.set('grey1.png', brick.frame.name);
-          break;
-          case 'yellow1.png':
-            this.registry.set('yellow1.png', brick.frame.name);
-            break;
-            case 'green1.png':
-              this.registry.set('green1.png', brick.frame.name);
-              break;
-              case 'red1.png':
-                this.registry.set('red1.png', brick.frame.name);
-                break;
-                case 'blue1.png':
-                  this.registry.set('blue1.png', brick.frame.name);
-                  break;
+      case 'grey1.png':
+        this.registry.set('grey1.png', brick.frame.name);
+        break;
+      case 'yellow1.png':
+        this.registry.set('yellow1.png', brick.frame.name);
+        break;
+      case 'green1.png':
+        this.registry.set('green1.png', brick.frame.name);
+        break;
+      case 'red1.png':
+        this.registry.set('red1.png', brick.frame.name);
+        break;
+      case 'blue1.png':
+        this.registry.set('blue1.png', brick.frame.name);
+        break;
       default:
-
     }
     if(this.bricks.countActive() === 0) {
       this.resetLevel();
@@ -162,7 +152,6 @@ export default class BreakOutScene extends Phaser.Scene {
   update(time, delta) {
     if(this.ball.y > 600) {
       this.registry.set('ballDrop', this.ball);
-
       this.resetBall();
     }
   }

@@ -1,7 +1,6 @@
 export default class StartScene extends Phaser.Scene {
   constructor() {
     super({ key: 'StartScene'});
-
     //this scene needs to have a button that starts the GameScene
     //it needs to have instructions and an explanation
     this.instructionsText;
@@ -18,7 +17,6 @@ export default class StartScene extends Phaser.Scene {
       .on('pointerup', this.onClick, this)
       .on('pointerover', this.onHover, this)
       .on('pointerout', this.onNotHover, this);
-
   }
 
   onClick() {
@@ -35,10 +33,6 @@ export default class StartScene extends Phaser.Scene {
 
   onNotHover() {
     this.startButton.setScale(1, 1)
-  }
-
-  update() {
-
   }
 
 };

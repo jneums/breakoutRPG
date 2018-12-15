@@ -28,6 +28,7 @@ class BootScene extends Phaser.Scene {
     this.load.audio('paddle', ['./assets/paddle_01.mp3', './assets/paddle_01.ogg']);
     this.load.audio('foom', ['./assets/foom_0.mp3', './assets/foom_0.ogg']);
     this.load.audio('freeze', ['./assets/freeze.mp3', './assets/freeze.ogg']);
+    this.load.atlas('assets', 'assets/breakout.png', 'assets/breakout.json');
     this.load.multiatlas('knight', 'assets/antler-knight.json', 'assets');
     this.load.multiatlas('combust', 'assets/combust.json', 'assets');
     this.load.multiatlas('heal', 'assets/heal.json', 'assets');
@@ -49,7 +50,6 @@ class BootScene extends Phaser.Scene {
 
   create() {
     this.registry.events.on('changedata', this.updateData, this);
-    // Pointer lock will only work after an 'engagement gesture', e.g. mousedown, keypress, etc.
     this.game.canvas.addEventListener('mousedown', function () {
       game.input.mouse.requestPointerLock();
     });

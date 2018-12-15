@@ -14,12 +14,13 @@ export default class GameScene extends Phaser.Scene {
     this.player;
     //array of enemies
     this.skeletons = [];
+    //object used as movement bullseye
     this.moveTarget;
 
     this.d = 0;
     this.backgroundMusic;
+    //number to countdown until new spawns
     this.enemyTimer = 3000;
-
   }
 
   //callback for the 'changedata' event listener
@@ -31,7 +32,6 @@ export default class GameScene extends Phaser.Scene {
 
   //create function
   create () {
-
     this.backgroundMusic = this.sound.add('music');
 
     this.backgroundMusic.play({
@@ -41,19 +41,14 @@ export default class GameScene extends Phaser.Scene {
       loop: true,
     })
 
-
     //set up scene
     this.buildMap();
     this.addPlayer();
     this.addEnemies();
 
-
-
     //set up click to move target
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
-
-
 
     //move target and start moving toward new pos
     this.input.on('pointerdown', function (pointer) {
@@ -134,33 +129,38 @@ export default class GameScene extends Phaser.Scene {
   }
 
   addEnemies(amt = 2) {
+    let index = -1;
     //add enemies
-    for(let i = 0; i < amt; i++) {
+    while (++index < amt) {
        this.skeletons.push(this.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
-       this.skeletons[i].setCircle(30, 50, 50);
+       this.skeletons[index].setCircle(30, 50, 50);
      }
    }
 
-
   update (time, delta) {
     this.enemyTimer--;
+    //spawn enemies
     if (this.enemyTimer <= 0) {
       this.addEnemies(1);
       this.enemyTimer = Phaser.Math.Between(2000, 5000);
     }
-    if(this.player.gameOver) {
+    //check for game over and emit gameover to ui
+    if (this.player.gameOver) {
       return this.registry.set('gameOver', this.player.xp);
-
     }
+
+    // which scene to show in front while in combat
     if(this.player.isInCombat()) {
       this.registry.set('combat', this.player.xp);
       this.input.enabled = false;
 
+    // which scene to show when not in combat
     } else if (!this.player.isInCombat()){
       this.registry.set('noCombat', this.player.xp);
       this.input.enabled = true;
-
     }
+
+    // update all the actors
     this.skeletons.forEach((skeleton) => {
       if(skeleton.getShouldUpdate()) {
         if(skeleton.isDead()) {

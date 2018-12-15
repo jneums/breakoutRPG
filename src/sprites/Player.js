@@ -4,13 +4,10 @@ export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.name = 'knight';
     this.depth = this.y + 84;
     this.xp = 0;
     this.healAnchor;
     this.shieldAnchor;
-
-
 
     this.gameOver = false;
 
@@ -86,7 +83,6 @@ export default class Player extends CharacterSheet {
 
   };
 
-
   addAnimationAnchor() {
     this.healAnchor = this.scene.add.sprite(this.x, this.y, 'heal', '18.png');
     this.healAnchor.setScale(.60);
@@ -95,7 +91,6 @@ export default class Player extends CharacterSheet {
     this.shieldAnchor = this.scene.add.sprite(this.x, this.y, 'shield', 'b_0016.png')
     this.shieldAnchor.setScale(.25);
     this.shieldAnchor.depth = this.depth+128;
-
   }
 
   updateData(parent, key, data) {
@@ -108,29 +103,27 @@ export default class Player extends CharacterSheet {
             this.anims.play(this.name+'_attack_'+this.getFacing(), true);
           }
           break;
-          case 'grey1.png':
-            this.absorbShield += 1;
-            break;
-            case 'yellow1.png':
-              this.equipped.weapon.stats.crit += 10;
-              this.reCalculateStats();
-              break;
-              case 'green1.png':
-                this.healSound.play({
-                  mute: false,
-                  volume: .9,
-                  rate: 1.5,
-                  detune: 0,
-                  loop: false,
-                })
-                this.healAnchor.anims.play('heal', false)
-                this.setCurrentHp(20, 'heal')
-                break;
+        case 'grey1.png':
+          this.absorbShield += 1;
+          break;
+        case 'yellow1.png':
+          this.equipped.weapon.stats.crit += 10;
+          this.reCalculateStats();
+          break;
+        case 'green1.png':
+          this.healSound.play({
+            mute: false,
+            volume: .9,
+            rate: 1.5,
+            detune: 0,
+            loop: false,
+          })
+          this.healAnchor.anims.play('heal', false)
+          this.setCurrentHp(20, 'heal')
+          break;
         default:
-
       }
     }
-
   }
 
   reCalculateStats() {
@@ -151,7 +144,6 @@ export default class Player extends CharacterSheet {
     this.xp += amt;
     this.scene.registry.set('playerXp', this.xp);
   }
-
 
   //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {
