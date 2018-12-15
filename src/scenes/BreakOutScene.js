@@ -2,7 +2,7 @@ export default class BreakOutScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BreakOutScene' });
     //creae BreakOutScene
-    this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'green1.png', 'yellow1.png'];
+    this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'purple1.png', 'green1.png', 'yellow1.png', 'yellow1.png'];
     this.bricks;
     this.paddle;
     this.ball;
@@ -29,7 +29,7 @@ export default class BreakOutScene extends Phaser.Scene {
     this.bricks = this.physics.add.staticGroup({
       key: 'assets', frame: this.randomBricks(),
       frameQuantity: 3,
-      gridAlign: { width: 10, height: 7, cellWidth: 64, cellHeight: 32, x: 112, y: 120 },
+      gridAlign: { width: 10, height: 6, cellWidth: 64, cellHeight: 32, x: 112, y: 120 },
     });
 
     this.bricks.children.each((brick) => {

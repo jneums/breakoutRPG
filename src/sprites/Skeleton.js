@@ -17,8 +17,8 @@ export default class Skeleton extends CharacterSheet {
     this.equipped = {
       weapon: {
         name: 'Undead Revenger',
-        damage: 50,
-        speed: .8,
+        damage: 105,
+        speed: .75,
         value: 1000,
         stats: {
           str: 2,
@@ -42,11 +42,11 @@ export default class Skeleton extends CharacterSheet {
       }
     }
 
-    this.str = 9 + this.calculateStats(this.equipped, 'str')
-    this.sta = 9 + this.calculateStats(this.equipped, 'sta');
-    this.agi = 9 + this.calculateStats(this.equipped, 'agi');
+    this.reCalculateStats();
 
     this.currentHps = this.getMaxHp();
+    this.scene.registry.set('targetHps', this)
+
     this.weaponDmg = this.equipped.weapon.damage;
     this.chanceToMiss = .15;
     this.crit = .15 + this.calculateStats(this.equipped, 'crit');
@@ -59,33 +59,35 @@ export default class Skeleton extends CharacterSheet {
 
     this.burnSound = this.scene.sound.add('foom');
     this.freezeSound = this.scene.sound.add('freeze');
+
+    this.loot;
+
   };
+
+  generateLoot(recipient) {
+    recipient.inventory.gold += 100;
+    recipient.inventory.items.push(this.equipped.weapon);
+    console.log(recipient.inventory);
+
+  }
+
 
   updateData(parent, key, data) {
     if(data !== 'destroy') {
       switch (key) {
         case 'red1.png':
           if(this) {
-
-            if(!this.isDead()) {
-              this.setCurrentHp((this.getMaxHp()*.25), 'melee');
-              this.burnSound.play({
-                mute: false,
-                volume: .3,
-                rate: .8,
-                detune: 0,
-                loop: false,
-              })
+            if(!this.isDead() && Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 75) {
               this.anims.play('combust', false)
-              this.frostTintIndex = 0;
-              this.clearTint();
             }
           }
           break;
           case 'blue1.png':
-            this.equipped.weapon.speed += 1;
-            this.weaponTimer = this.equipped.weapon.speed * 60
-            if(!this.isDead()) {
+
+            if(!this.isDead() && Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 75) {
+              this.equipped.weapon.speed += (.25 * this.equipped.weapon.speed);
+              this.weaponTimer = this.equipped.weapon.speed * 60
+
               this.setTint(this.frostTint[++this.frostTintIndex])
               this.freezeSound.play({
                 mute: false,
@@ -105,7 +107,7 @@ export default class Skeleton extends CharacterSheet {
   reCalculateStats() {
     var stats = ['str', 'sta', 'agi', 'crit']
     stats.forEach((el) => {
-      this[el] = 19 + this.calculateStats(this.equipped, el);
+      this[el] = this.calculateStats(this.equipped, el);
     })
   }
 
@@ -119,14 +121,17 @@ export default class Skeleton extends CharacterSheet {
     } else if (type === 'heal') {
       this.currentHps += val;
     }
-    this.scene.registry.set('targetHps', this.currentHps)
+    this.scene.registry.set('targetHps', this)
   };
 
 
   update() {
+    this.nameText.setPosition(this.x - 34, this.y - 56).depth = this.y + 128;
+
+
     this.cooldowns.swing--;
 
-    if(Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 500) {
+    if(Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 200) {
       this.setInCombat(true);
       this.setCurrentTarget(this.scene.player);
     }
@@ -137,7 +142,8 @@ export default class Skeleton extends CharacterSheet {
         this.moveToAttacker(this.getCurrentTarget());
         this.depth = this.y + 64;
       } else if(Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 75 && this.cooldowns.swing <= 0) {
-        this.meleeSwing(this.getCurrentTarget());
+        this.anims.play(this.name+'_attack_'+this.getFacing(), true);
+
       }
     } else {
       this.idle();

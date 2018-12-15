@@ -1,0 +1,26 @@
+{
+  "weapons":{
+    "name":"Undead Revenger",
+    "damage":50,
+    "speed":0.8,
+    "value":1000,
+    "stats":{
+      "str":2,
+      "agi":1,
+      "sta":6,
+      "crit":0.08
+      }
+  },
+  "armor":{
+    "slot":"chest",
+    "type":"mail",
+    "name":"Deaths Grasp",
+    "armor":6,
+    "value":1000,
+    "stats":{
+      "str":3,
+      "agi":2,
+      "sta":14
+    }
+  }
+}

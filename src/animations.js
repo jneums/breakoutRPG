@@ -148,6 +148,7 @@ var anims = {
     endFrame: 19,
     frameRate: 10,
     repeat: 0,
+    yoyo: false
   },
   die: {
     startFrame: 20,

@@ -14,26 +14,25 @@ export default class GameScene extends Phaser.Scene {
     this.player;
     //array of enemies
     this.skeletons = [];
+    this.moveTarget;
 
     this.d = 0;
-    this.scene;
     this.backgroundMusic;
-
+    this.enemyTimer = 3000;
 
   }
 
   //callback for the 'changedata' event listener
   updateData(parent, key, data) {
     if(key === 'ballDrop') {
-      this.addEnemies(1);
+      //on ball drop, what should punishment be?
     }
   }
 
   //create function
   create () {
 
-    this.scene = this.scene.scene
-    this.backgroundMusic = this.scene.sound.add('music');
+    this.backgroundMusic = this.sound.add('music');
 
     this.backgroundMusic.play({
       mute: false,
@@ -42,24 +41,47 @@ export default class GameScene extends Phaser.Scene {
       loop: true,
     })
 
-    //spawn skeletons infinitely
-    this.skeletonSpawn = this.scene.time.addEvent({
-      delay: 15000,
-      callback: this.addEnemies,
-      callbackScope: this,
-      repeat: -1,
-    })
 
-    this.scene.registry.events.on('changedata', this.updateData, this);
     //set up scene
     this.buildMap();
     this.addPlayer();
     this.addEnemies();
 
+
+
+    //set up click to move target
+    this.moveTarget = this.physics.add.image(25, 25, 'star');
+    this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
+
+
+
+    //move target and start moving toward new pos
+    this.input.on('pointerdown', function (pointer) {
+      //scroll plus pointer.x to compensate for follow cam cooords
+      let pointerPlusScrollX = pointer.x+this.cameras.cameras[0].scrollX;
+      let pointerPlusScrollY = pointer.y+this.cameras.cameras[0].scrollY;
+      let angle = Phaser.Math.Angle.BetweenY(this.player.x, this.player.y, pointerPlusScrollX, pointerPlusScrollY);
+
+      this.player.setFacing(angle);
+      this.moveTarget.setPosition(pointerPlusScrollX, pointerPlusScrollY )
+
+      this.physics.moveToObject(this.player, this.moveTarget, 100);
+      this.player.isMoving = true;
+    }, this);
+
+    //stop the player at the moveTarget, or at the hitbox of the enemy
+    this.physics.add.overlap(this.player, this.moveTarget, function (playerOnMoveTarget) {
+      playerOnMoveTarget.isMoving = false;
+      playerOnMoveTarget.body.stop();
+    }, null, this);
+
     //stops the skeletons from moving through the player
     this.physics.add.overlap(this.skeletons, this.player, function (playerOnEnemy) {
       playerOnEnemy.isMoving = false;
+      this.player.isMoving = false;
+      this.player.body.stop()
       playerOnEnemy.body.stop()
+     //maybe get player to stop moving here
     }, null, this);
 
 
@@ -67,7 +89,7 @@ export default class GameScene extends Phaser.Scene {
 
   //building a map
   buildMap () {
-    var data = this.scene.cache.json.get('map');
+    var data = this.cache.json.get('map');
 
     var tilewidth = data.tilewidth;
     var tileheight = data.tileheight;
@@ -92,7 +114,7 @@ export default class GameScene extends Phaser.Scene {
         var tx = (x - y) * this.tileWidthHalf;
         var ty = (x + y) * this.tileHeightHalf;
 
-        var tile = this.scene.add.image(centerX + tx, centerY + ty, 'tiles', id);
+        var tile = this.add.image(centerX + tx, centerY + ty, 'tiles', id);
 
         //keeps map behind objects
         tile.depth = 0;
@@ -106,24 +128,40 @@ export default class GameScene extends Phaser.Scene {
   addPlayer() {
     this.player = new Player(this, 800, 480, 'knight')
     this.player.setScale(.50)
-    this.player.setCircle(150, 60, 80)
-    this.scene.cameras.main.setScroll(400, 100).setZoom(1.3)
+    this.player.setCircle(50, 160, 180)
+    this.cameras.main.startFollow(this.player, false, .5, .5, 0, 50).setZoom(1.5)
+
   }
 
-  addEnemies(amt = 3) {
+  addEnemies(amt = 2) {
     //add enemies
     for(let i = 0; i < amt; i++) {
-       this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
-       this.skeletons[i].setCircle(50, 15, 20);
+       this.skeletons.push(this.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
+       this.skeletons[i].setCircle(30, 50, 50);
      }
    }
 
+
   update (time, delta) {
+    this.enemyTimer--;
+    if (this.enemyTimer <= 0) {
+      this.addEnemies(1);
+      this.enemyTimer = Phaser.Math.Between(2000, 5000);
+    }
     if(this.player.gameOver) {
-      return this.scene.registry.set('gameOver', this.player.xp);
+      return this.registry.set('gameOver', this.player.xp);
 
     }
-    this.skeletons.map((skeleton) => {
+    if(this.player.isInCombat()) {
+      this.registry.set('combat', this.player.xp);
+      this.input.enabled = false;
+
+    } else if (!this.player.isInCombat()){
+      this.registry.set('noCombat', this.player.xp);
+      this.input.enabled = true;
+
+    }
+    this.skeletons.forEach((skeleton) => {
       if(skeleton.getShouldUpdate()) {
         if(skeleton.isDead()) {
           skeleton.die();

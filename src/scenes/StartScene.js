@@ -22,10 +22,10 @@ export default class StartScene extends Phaser.Scene {
   }
 
   onClick() {
-    //start gamescene
     this.startButton.anims.play('button')
 
     this.scene.start('GameScene');
+    this.scene.bringToTop('GameScene')
 
   }
 

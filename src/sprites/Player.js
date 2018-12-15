@@ -4,23 +4,19 @@ export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.type = 'knight';
+    this.name = 'knight';
     this.depth = this.y + 84;
     this.xp = 0;
     this.healAnchor;
     this.shieldAnchor;
 
-    //add hp event watcher and sync ui with currenthp
-    scene.registry.set('playerHps', this.currentHps);
-    this.setCurrentHp(0, 'heal');
-    scene.registry.set('playerXp', this.xp);
-    this.gainXp(1);
 
 
     this.gameOver = false;
 
-    this.cooldowns = {
-      swing: 0,
+    this.inventory = {
+      gold: 0,
+      items: [],
     }
 
     this.weapons = [
@@ -41,12 +37,12 @@ export default class Player extends CharacterSheet {
         type: 'twoHandedSword',
         name: 'Hand of Fury',
         damage: 172,
-        speed: 2.2,
+        speed: 1.5,
         value: 20000,
         stats: {
           str: 5,
           agi: 5,
-          sta: 100,
+          sta: 10,
           crit: 1,
         },
       },
@@ -62,25 +58,26 @@ export default class Player extends CharacterSheet {
         stats: {
           str: 4,
           agi: 3,
-          sta: 0,
+          sta: 20,
           crit: 1,
 
         },
       },
     }
-    this.str;
-    this.sta;
-    this.agi;
-    this.crit;
+
     this.reCalculateStats();
     scene.registry.set('crit', this.crit);
+
+    this.currentHps = this.getMaxHp();
+    //add hp event watcher and sync ui with currenthp
+    scene.registry.set('playerHps', this.currentHps);
+    this.setCurrentHp(0, 'heal');
+    scene.registry.set('playerXp', this.xp);
+    this.gainXp(1);
 
     this.changeWeapon(this.weapons[1]);
     this.chanceToMiss = .15;
 
-    this.weaponTimer = this.equipped.weapon.speed * 60;
-
-    this.currentHps = 100;
     this.scene.registry.events.on('changedata', this.updateData, this);
 
     this.addAnimationAnchor();
@@ -88,6 +85,7 @@ export default class Player extends CharacterSheet {
     this.absorbSound = this.scene.sound.add('absorb');
 
   };
+
 
   addAnimationAnchor() {
     this.healAnchor = this.scene.add.sprite(this.x, this.y, 'heal', '18.png');
@@ -106,11 +104,12 @@ export default class Player extends CharacterSheet {
     } else {
       switch (key) {
         case 'purple1.png':
-          this.cooldowns.swing = 0;
-          this.reCalculateStats();
+          if (this.getCurrentTarget()) {
+            this.anims.play(this.name+'_attack_'+this.getFacing(), true);
+          }
           break;
           case 'grey1.png':
-            this.absorbShield += 5;
+            this.absorbShield += 1;
             break;
             case 'yellow1.png':
               this.equipped.weapon.stats.crit += 10;
@@ -166,20 +165,30 @@ export default class Player extends CharacterSheet {
     this.scene.registry.set('playerHps', this.currentHps)
   };
 
+  enemyInRange() {
+    const enemies = this.scene.skeletons.map((skeleton) => {
+      return (!skeleton.isDead() && Phaser.Math.Distance.Between(this.x, this.y, skeleton.x, skeleton.y) < 125);
+    });
+    if (enemies.includes(true)) {
+      this.setInCombat(true)
+    } else {
+      this.setInCombat(false)
+    }
+  }
+
   update() {
-    if(!this.isDead()) {
-      this.cooldowns.swing--;
+    //keep the animations on top of moving player
+    this.healAnchor.setPosition(this.x, this.y)
+    this.shieldAnchor.setPosition(this.x, this.y)
+    this.nameText.setPosition(this.x - 28, this.y - 56).depth = this.y + 128;
+    if (!this.isDead()) {
+      this.enemyInRange();
       if(this.isMoving) {
         this.running();
-      } else if(this.isInCombat() && this.getCurrentTarget()) {
+      } else if (this.isInCombat() && this.getCurrentTarget()) {
         this.setFacing(this.getRadsToCurrentTarget());
         if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 100) {
           this.isMoving = false;
-          if(this.cooldowns.swing <= 0 && !this.getCurrentTarget().isDead()) {
-            this.meleeSwing(this.getCurrentTarget());
-          } else if(this.getCurrentTarget().isDead()) {
-            this.setInCombat(false);
-          }
         }
       } else {
         this.idle();

@@ -5,17 +5,23 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.x = x;
     this.y = y;
     this.setTexture(texture);
-    this.type = texture;
+    this.name = texture;
     this.depth = this.y + 64;
     this.absorbShield = 0;
+    this.str;
+    this.sta;
+    this.agi;
+    this.crit;
 
+    this.nameText = scene.add.text(this.x - 30, this.y - 50);
+    this.nameText.setText(this.name).setVisible(false);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-
     this.motion = 'idle';
     this.inCombat = false;
+
     this.cooldowns = {
       swing: 0,
     }
@@ -24,50 +30,79 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
     this.facing = 'south';
     this.shouldUpdate = true;
+
+    //sounds
     this.missMeleeSwing = this.scene.sound.add('miss');
     this.hitMeleeSwing = this.scene.sound.add('clash');
     this.critMeleeSwing = this.scene.sound.add('crit');
+
+    this.on('animationcomplete', function (anim, frame) {
+      const type = anim.key.split('_');
+      if ('attack' == type[1] && this.getCurrentTarget()) {
+        this.meleeSwing(this.getCurrentTarget());
+        this.idle()
+      } else if (anim.key === 'combust') {
+        this.idle();
+        this.setCurrentHp((this.getMaxHp()*.25), 'melee');
+        this.cooldowns.swing = this.weaponTimer;
+
+        this.burnSound.play({
+          mute: false,
+          volume: .3,
+          rate: .8,
+          detune: 0,
+          loop: false,
+        })
+        this.frostTintIndex = 0;
+        this.clearTint();
+      }
+    }, this);
+
+    this.currentHps = this.getMaxHp();
+
 
   };
 
   calculateStats(equipped, stat) {
   //combine all the stat from equipped items
-    return Object.keys(equipped).map(child => equipped[child].stats[stat])
-                                .reduce((acc, item) => {
-                                  return acc + item;
-                                })
+    return Object.keys(equipped)
+    .map(child => equipped[child].stats[stat])
+    .reduce((acc, item) => acc + item)
   }
 
   running() {
     this.depth = this.y + 64;
-    this.anims.play(this.type + '_run_' + this.getFacing(), true);
+    this.anims.play(this.name + '_run_' + this.getFacing(), true);
   }
-  walking() {
 
+  walking() {
     this.depth = this.y + 64;
-    this.anims.play(this.type + '_walk_' + this.getFacing(), true);
+    this.anims.play(this.name + '_walk_' + this.getFacing(), true);
   }
 
   idle() {
-    this.anims.play(this.type + '_idle_' + this.getFacing(), true);
+    this.anims.play(this.name + '_idle_' + this.getFacing(), true);
   }
 
   die() {
-    this.depth -= 64;
-    this.setVelocity(0)
-    this.scene.registry.set('targetHps', 0)
-    if(this.getCurrentTarget()) {
-      this.getCurrentTarget().clearCurrentTarget();
-      this.clearCurrentTarget();
+    if (this.name === 'skeleton') {
+      this.generateLoot(this.getCurrentTarget());
+      this.nameText.setVisible(false);
+      this.depth -= 64;
+      this.setVelocity(0)
+      this.scene.registry.set('targetHps', this)
+      if(this.getCurrentTarget()) {
+        this.getCurrentTarget().clearCurrentTarget();
+        this.clearCurrentTarget();
+      }
+      this.clearTint();
+      this.body.checkCollision.none = true;
+      //this.removeInteractive();
+      this.setShouldUpdate(false);
+      //no player die animation yet
     }
-    this.clearTint();
-    this.body.checkCollision.none = true;
-    //this.removeInteractive();
-    this.setShouldUpdate(false);
-    //no player die animation yet
 
     this.anims.play('skeleton' + '_die_' + this.getFacing(), true)
-
   }
 
   getRadsToCurrentTarget() {
@@ -127,16 +162,13 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
 
   meleeSwing(target) {
-    this.anims.play(this.type+'_attack_'+this.getFacing());
     let dmg = ((this.equipped.weapon.damage * this.getAttackPower()) + this.equipped.weapon.damage) /60;
     dmg = this.absorbShieldAmt(target, dmg);
-    let miss = Phaser.Math.Between(0, 100) < 34;
-    if(!this.getCurrentTarget().getCurrentTarget()) {
-      this.getCurrentTarget().setCurrentTarget(this);
+    let miss = Phaser.Math.Between(0, 100) < 10;
+    if(!target.getCurrentTarget()) {
+      target.setCurrentTarget(this);
     }
-    if(!this.getCurrentTarget().isInCombat()) {
-      this.getCurrentTarget().setInCombat(true);
-    }
+
     if(miss) {
       //miss melee swing
       this.cooldowns.swing = this.weaponTimer;
@@ -144,20 +176,19 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
         mute: false,
         volume: .3,
         rate: .8,
-        detune: 0,
       });
 
     } else if(!miss && dmg) {
       if(this.willCrit()) {
-        let crit = dmg * 10;
+        let crit = dmg * 2;
         target.setCurrentHp(crit, 'melee')
-        if(this.type === 'knight') {
+        if(this.name === 'knight') {
+          console.log('crit: ' + crit);
+
           this.critMeleeSwing.play({
             mute: false,
             volume: .8,
             rate: 2,
-            detune: 0,
-            delay: .7,
           });
           this.equipped.weapon.stats.crit = 0;
           this.reCalculateStats();
@@ -165,30 +196,25 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
           this.gainXp(crit)
         }
       } else {
-        let delay = this.type === 'knight' ? .9 : .5;
         this.hitMeleeSwing.play({
           mute: false,
           volume: .3,
           rate: .8,
-          detune: 0,
-          delay: delay,
         });
         target.setCurrentHp(dmg, 'melee');
-        if(this.type === 'knight') {
+        if(this.name === 'knight') {
+          console.log('dmg: ' + dmg);
+          console.log(this.equipped);
+
           this.gainXp(dmg)
         }
       }
     }
-
     this.cooldowns.swing = this.weaponTimer;
   };
 
   willCrit() {
-    if(Phaser.Math.Between(0,100) < this.crit) {
-      return true;
-    } else {
-      return false;
-    }
+    return Phaser.Math.Between(0,100) < this.crit ? true : false;
   };
 
   getAttackPower() {
@@ -218,7 +244,12 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
   setCurrentTarget(target) {
     this.currentTarget = target;
-    //this.currentTarget.setTint('0x7fff0000')
+    if (this.name === 'knight') {
+      this.scene.registry.set('targetHps', this.currentTarget)
+      this.currentTarget.nameText.setVisible(true);
+    }
+
+    //
   };
 
   getCurrentTarget() {
@@ -234,6 +265,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   };
 
   isInCombat() {
+
     return this.inCombat;
   };
 
