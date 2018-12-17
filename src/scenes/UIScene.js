@@ -16,7 +16,7 @@ export default class UIScene extends Phaser.Scene {
   create() {
     this.hpText = this.add.text(30, 10);
     this.xpText = this.add.text(30, 30);
-    this.targetHpText = this.add.text(650, 10)
+    this.targetHpText = this.add.text(1080, 10)
     this.crit = this.add.text(30, 50)
     this.registry.events.on('changedata', this.updateData, this);
   }

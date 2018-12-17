@@ -4,7 +4,7 @@ export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.depth = this.y + 128;
+    this.depth = this.y + 96;
     this.xp = 0;
     this.healAnchor;
     this.shieldAnchor;
@@ -84,11 +84,11 @@ export default class Player extends CharacterSheet {
   };
 
   addAnimationAnchor() {
-    this.healAnchor = this.scene.add.sprite(this.x, this.y, 'heal', '18.png');
+    this.healAnchor = this.scene.add.sprite(this.x, this.y, 'heal', '18');
     this.healAnchor.setScale(.60);
-    this.healAnchor.depth = this.depth+64;
+    this.healAnchor.depth = this.depth+128;
 
-    this.shieldAnchor = this.scene.add.sprite(this.x, this.y, 'shield', 'b_0016.png')
+    this.shieldAnchor = this.scene.add.sprite(this.x, this.y, 'shield', 'b_0016')
     this.shieldAnchor.setScale(.25);
     this.shieldAnchor.depth = this.depth+128;
   }
@@ -170,7 +170,9 @@ export default class Player extends CharacterSheet {
 
   update() {
     //keep the animations on top of moving player
+    this.healAnchor.depth = this.depth + 2;
     this.healAnchor.setPosition(this.x, this.y)
+    this.shieldAnchor.depth = this.depth + 2;
     this.shieldAnchor.setPosition(this.x, this.y)
     this.nameText.setPosition(this.x - 28, this.y - 56).depth = this.y + 128;
     if (!this.isDead()) {

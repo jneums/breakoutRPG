@@ -31,10 +31,9 @@ function createAnimations(scene) {
    scene.anims.create({
      key: 'heal',
      frames: scene.anims.generateFrameNames('heal', {
-       suffix: '.png',
        start: 0,
-       end: 18,
-       zeroPad: 2
+       end: 19,
+       zeroPad: 2,
      }),
      repeat: 0,
      duration: 1000,
@@ -42,9 +41,8 @@ function createAnimations(scene) {
    scene.anims.create({
      key: 'shield',
      frames: scene.anims.generateFrameNames('shield', {
-       suffix: '.png',
        prefix: 'b_',
-       start: 1,
+       start: 0,
        end: 16,
        zeroPad: 4
      }),

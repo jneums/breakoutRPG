@@ -25,16 +25,15 @@ export default class BootScene extends Phaser.Scene {
     this.load.multiatlas('heal', 'assets/heal.json', 'assets');
     this.load.multiatlas('shield', 'assets/shield.json', 'assets');
     this.load.multiatlas('button', 'assets/button.json', 'assets');
-    //this.load.json('map', 'assets/isometric-grass-and-water.json');
     this.load.json('map', 'assets/dungeon_01.json');
     this.load.spritesheet('tiles', 'assets/tileset_cave_1.png', { frameWidth: 64, frameHeight: 32 });
-    this.load.spritesheet('skeleton', 'assets/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
-    this.load.image('house', 'assets/rem_0002.png');
+    this.load.spritesheet('skeleton', 'assets/skeleton.png', { frameWidth: 128, frameHeight: 128 });
     this.load.image('star', 'assets/star.png');
     this.load.on('complete', () => {
       createAnimations(this);
-      this.scene.start('BreakOutScene');
       this.scene.start('StartScene');
+      this.scene.start('BreakOutScene');
+
     })
   }
 
@@ -51,10 +50,10 @@ export default class BootScene extends Phaser.Scene {
       this.scene.stop('BreakOutScene');
       this.game.input.mouse.releasePointerLock();
     } else if (key === 'combat') {
-      this.scene.resume('BreakOutScene');
+      this.scene.resume('BreakOutScene').setVisible(true, 'BreakOutScene');
       this.scene.sendToBack('GameScene')
     } else if (key === 'noCombat') {
-      this.scene.pause('BreakOutScene');
+      this.scene.pause('BreakOutScene').setVisible(false, 'BreakOutScene');
       this.scene.sendToBack('BreakOutScene')
       this.game.input.mouse.releasePointerLock();
 

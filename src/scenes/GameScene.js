@@ -44,7 +44,6 @@ export default class GameScene extends Phaser.Scene {
 
 
     this.addPlayer();
-    this.addEnemies();
 
     //set up scene
     this.buildMap(this.player);
@@ -120,15 +119,20 @@ export default class GameScene extends Phaser.Scene {
           var ty = (x + y) * this.tileHeightHalf;
 
           if (id !== 0) {
-            var tile = this.physics.add.staticImage(centerX + tx, centerY + ty, 'tiles', id - 1);
-            tile.depth = (centerY + ty) + (32 * k);
+            if (k === 5) {
+              console.log('adding skeleton');
+              this.addEnemies(centerX + tx, centerY + ty)
+            } else {
+              var tile = this.physics.add.staticImage(centerX + tx, centerY + ty, 'tiles', id - 1);
+              tile.depth = (centerY + ty) + (32 * k);
 
-            if (k === 1) {
-              tile.setCircle(20, 0, -5);
-              this.physics.add.collider(player, tile);
+
+              if (k === 1) {
+                tile.setCircle(20, 0, -5);
+                this.physics.add.collider(player, tile);
+              }
             }
           }
-
           //keeps map behind objects
           i++;
         }
@@ -142,17 +146,15 @@ export default class GameScene extends Phaser.Scene {
     this.player = new Player(this, 8050, 1970, 'knight')
     this.player.setScale(.50)
     this.player.setCircle(50, 160, 180)
-    this.cameras.main.startFollow(this.player, false, .5, .5, 0, 50).setZoom(2)
-
+    this.cameras.main.startFollow(this.player, false, .5, .5, 0, 50).setZoom(1)
   }
 
-  addEnemies(amt = 2) {
-    let index = -1;
+  addEnemies(x, y) {
     //add enemies
-    while (++index < amt) {
-       this.skeletons.push(this.add.existing(new Skeleton(this, Phaser.Math.Between(7850,8000), Phaser.Math.Between(2000, 2200), 'skeleton')));
-       this.skeletons[index].setCircle(30, 50, 50);
-     }
+    var index = 0;
+    this.skeletons.push(this.add.existing(new Skeleton(this, x, y, 'skeleton')));
+    this.skeletons[index].setCircle(30, 50, 50);
+    index++;
    }
 
   update (time, delta) {

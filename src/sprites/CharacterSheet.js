@@ -83,6 +83,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
   die() {
     if (this.name === 'skeleton') {
+      this.depth = this.y + 46;
       this.generateLoot(this.getCurrentTarget());
       this.nameText.setVisible(false);
       this.setVelocity(0)
