@@ -16,6 +16,7 @@ export default class GameScene extends Phaser.Scene {
     this.skeletons = [];
     //object used as movement bullseye
     this.moveTarget;
+    this.background;
 
     this.d = 0;
     this.backgroundMusic;
@@ -41,11 +42,12 @@ export default class GameScene extends Phaser.Scene {
       loop: true,
     })
 
-    //set up scene
-    this.buildMap();
+
     this.addPlayer();
     this.addEnemies();
 
+    //set up scene
+    this.buildMap(this.player);
     //set up click to move target
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
@@ -63,6 +65,7 @@ export default class GameScene extends Phaser.Scene {
       this.physics.moveToObject(this.player, this.moveTarget, 100);
       this.player.isMoving = true;
     }, this);
+
 
     //stop the player at the moveTarget, or at the hitbox of the enemy
     this.physics.add.overlap(this.player, this.moveTarget, function (playerOnMoveTarget) {
@@ -82,49 +85,64 @@ export default class GameScene extends Phaser.Scene {
 
   }
 
-  //building a map
-  buildMap () {
-    var data = this.cache.json.get('map');
+  wallCollider(playerOnWall) {
+    //find out which direction is touching
+    //stop velocity in that direction only
+  }
 
-    var tilewidth = data.tilewidth;
-    var tileheight = data.tileheight;
+  //building a map
+  buildMap (player) {
+    var map = this.cache.json.get('map');
+
+
+    var tilewidth = map.tilewidth;
+    var tileheight = map.tileheight;
 
     this.tileWidthHalf = tilewidth / 2;
     this.tileHeightHalf = tileheight / 2;
 
-    var layer = data.layers[0].data;
+    for (let k = 0; k < map.layers.length; k++) {
+      var data = map.layers[k].data;
 
-    var mapwidth = data.layers[0].width;
-    var mapheight = data.layers[0].height;
+      var mapwidth = map.layers[k].width;
+      var mapheight = map.layers[k].height;
 
-    var centerX = mapwidth * this.tileWidthHalf;
-    var centerY = 16;
+      var centerX = mapwidth * this.tileWidthHalf;
+      var centerY = 16;
 
-    var i = 0;
+      var i = 0;
 
-    for (let y = 0; y < mapheight; y++) {
-      for (let x = 0; x < mapwidth; x++) {
-        var id = layer[i] - 1;
+      for (let y = 0; y < mapheight; y++) {
+        for (let x = 0; x < mapwidth; x++) {
+          var id = data[i];
 
-        var tx = (x - y) * this.tileWidthHalf;
-        var ty = (x + y) * this.tileHeightHalf;
+          var tx = (x - y) * this.tileWidthHalf;
+          var ty = (x + y) * this.tileHeightHalf;
 
-        var tile = this.add.image(centerX + tx, centerY + ty, 'tiles', id);
+          if (id !== 0) {
+            var tile = this.physics.add.staticImage(centerX + tx, centerY + ty, 'tiles', id - 1);
+            tile.depth = (centerY + ty) + (32 * k);
 
-        //keeps map behind objects
-        tile.depth = 0;
+            if (k === 1) {
+              tile.setCircle(20, 0, -5);
+              this.physics.add.collider(player, tile);
+            }
+          }
 
-        i++;
+          //keeps map behind objects
+          i++;
+        }
       }
     }
+
   }
 
 
   addPlayer() {
-    this.player = new Player(this, 800, 480, 'knight')
+    this.player = new Player(this, 8050, 1970, 'knight')
     this.player.setScale(.50)
     this.player.setCircle(50, 160, 180)
-    this.cameras.main.startFollow(this.player, false, .5, .5, 0, 50).setZoom(1.5)
+    this.cameras.main.startFollow(this.player, false, .5, .5, 0, 50).setZoom(2)
 
   }
 
@@ -132,7 +150,7 @@ export default class GameScene extends Phaser.Scene {
     let index = -1;
     //add enemies
     while (++index < amt) {
-       this.skeletons.push(this.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(290, 500), 'skeleton')));
+       this.skeletons.push(this.add.existing(new Skeleton(this, Phaser.Math.Between(7850,8000), Phaser.Math.Between(2000, 2200), 'skeleton')));
        this.skeletons[index].setCircle(30, 50, 50);
      }
    }

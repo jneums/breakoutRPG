@@ -25,13 +25,12 @@ export default class BootScene extends Phaser.Scene {
     this.load.multiatlas('heal', 'assets/heal.json', 'assets');
     this.load.multiatlas('shield', 'assets/shield.json', 'assets');
     this.load.multiatlas('button', 'assets/button.json', 'assets');
-    this.load.json('map', 'assets/isometric-grass-and-water.json');
-    this.load.spritesheet('tiles', 'assets/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
+    //this.load.json('map', 'assets/isometric-grass-and-water.json');
+    this.load.json('map', 'assets/dungeon_01.json');
+    this.load.spritesheet('tiles', 'assets/tileset_cave_1.png', { frameWidth: 64, frameHeight: 32 });
     this.load.spritesheet('skeleton', 'assets/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
-    this.load.spritesheet('blades', 'assets/blades.png', { frameWidth: 126, frameHeight: 128 });
     this.load.image('house', 'assets/rem_0002.png');
     this.load.image('star', 'assets/star.png');
-    this.load.image('background', 'assets/background.png');
     this.load.on('complete', () => {
       createAnimations(this);
       this.scene.start('BreakOutScene');

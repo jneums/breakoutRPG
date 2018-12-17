@@ -4,7 +4,7 @@ export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.depth = this.y + 84;
+    this.depth = this.y + 128;
     this.xp = 0;
     this.healAnchor;
     this.shieldAnchor;
