@@ -1,13 +1,14 @@
-# Phaser 3 Isometric RPG
+# breakoutRPG, a Hybrid game using Phaser3
+BreakoutRPG is an adventure RPG game where the combat is decided
+by playing breakout. Level up and raise your character stats, kill
+skeletons and loot awesome weapons, and fight through unique dungeons.
 
-This game started out at "A Phaser 3 based isometric role playing game".
-After I saw the Game Off 2018 jam on Itch.io I decided to take a break from the RPG 
-and added in the breakout scene, and attaching the bricks to actions in the RPG game.
-
-I will probably go back to the RPG now that the Game Off is over. 
-If anyone wants to work on it that would be fun. I am just starting
-out so I would appreciate the experience.
-
+TODO (so far, more will be added):
+- Finish map, so it is a smooth experience to walk through, with no collisions.
+- Add spawn points for enemies, will be done in Tiled.
+- Work on the Breakout mechanics.
+- Loot and inventory system.
+- Pointer support for touch.
 
 
 ### Requirements
