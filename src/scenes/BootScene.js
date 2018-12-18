@@ -28,6 +28,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.json('map', 'assets/dungeon_01.json');
     this.load.spritesheet('tiles', 'assets/tileset_cave_1.png', { frameWidth: 64, frameHeight: 32 });
     this.load.spritesheet('skeleton', 'assets/skeleton.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.spritesheet('abilities', 'assets/abilities.png', { frameWidth: 128, frameHeight: 128 });
     this.load.image('star', 'assets/star.png');
     this.load.on('complete', () => {
       createAnimations(this);

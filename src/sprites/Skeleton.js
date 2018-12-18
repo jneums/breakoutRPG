@@ -66,14 +66,14 @@ export default class Skeleton extends CharacterSheet {
   updateData(parent, key, data) {
     if(data !== 'destroy') {
       switch (key) {
-        case 'red1.png':
+        case '4':
           if(this) {
             if(!this.isDead() && Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 75) {
               this.anims.play('combust', false)
             }
           }
           break;
-        case 'blue1.png':
+        case '3':
           if(!this.isDead() && Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 75) {
             this.equipped.weapon.speed += (.25 * this.equipped.weapon.speed);
             this.weaponTimer = this.equipped.weapon.speed * 60;

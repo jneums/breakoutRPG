@@ -98,19 +98,19 @@ export default class Player extends CharacterSheet {
       return;
     } else {
       switch (key) {
-        case 'purple1.png':
+        case '0':
           if (this.getCurrentTarget()) {
             this.anims.play(this.name+'_attack_'+this.getFacing(), true);
           }
           break;
-        case 'grey1.png':
+        case '5':
           this.absorbShield += 1;
           break;
-        case 'yellow1.png':
+        case '1':
           this.equipped.weapon.stats.crit += 10;
           this.reCalculateStats();
           break;
-        case 'green1.png':
+        case '2':
           this.healSound.play({
             mute: false,
             volume: .9,
@@ -122,6 +122,7 @@ export default class Player extends CharacterSheet {
           this.setCurrentHp(20, 'heal')
           break;
         default:
+
       }
     }
   }

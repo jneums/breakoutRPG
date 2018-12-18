@@ -120,7 +120,6 @@ export default class GameScene extends Phaser.Scene {
 
           if (id !== 0) {
             if (k === 5) {
-              console.log('adding skeleton');
               this.addEnemies(centerX + tx, centerY + ty)
             } else {
               var tile = this.physics.add.staticImage(centerX + tx, centerY + ty, 'tiles', id - 1);

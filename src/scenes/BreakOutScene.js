@@ -1,7 +1,6 @@
 export default class BreakOutScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BreakOutScene' });
-    this.brickKeys = ['red1.png', 'grey1.png', 'blue1.png', 'purple1.png', 'purple1.png', 'green1.png', 'yellow1.png'];
     this.bricks;
     this.paddle;
     this.ball;
@@ -13,23 +12,24 @@ export default class BreakOutScene extends Phaser.Scene {
 
   randomBricks() {
     var brickArray = [],
-        index = 28+1;
+        index = 16 + 1;
     while(--index) {
-      brickArray.push(Phaser.Math.RND.pick(this.brickKeys));
+      brickArray.push(Phaser.Math.Between(0, 5));
     }
     return brickArray;
   }
 
   brickRandomizer() {
     this.bricks = this.physics.add.staticGroup({
-      key: 'assets', frame: this.randomBricks(),
-      frameQuantity: 4,
-      gridAlign: { width: 16, height: 7, cellWidth: 64, cellHeight: 32, x: 128, y: 128 },
+      key: 'abilities',
+      frame: this.randomBricks(),
+      frameQuantity: 1,
+      gridAlign: { width: 8, height: 2, cellWidth: 128, cellHeight: 128, x: 188, y: 128 },
     });
 
     this.bricks.children.each((brick) => {
-      brick.setAlpha(0.7)
-      this.registry.set(brick.frame.name, brick.frame.name);
+      brick.setAlpha(0.4)
+      this.registry.set(brick.frame.name + '', brick.frame.name + '');
 
     });
   }
@@ -84,23 +84,23 @@ export default class BreakOutScene extends Phaser.Scene {
     })
     brick.disableBody(true, true);
     switch (brick.frame.name) {
-      case 'purple1.png':
-        this.registry.set('purple1.png', brick.frame.name);
+      case 0:
+        this.registry.set('0', '0');
         break;
-      case 'grey1.png':
-        this.registry.set('grey1.png', brick.frame.name);
+      case 2:
+        this.registry.set('2', '2');
         break;
-      case 'yellow1.png':
-        this.registry.set('yellow1.png', brick.frame.name);
+      case 1:
+        this.registry.set('1', '1');
         break;
-      case 'green1.png':
-        this.registry.set('green1.png', brick.frame.name);
+      case 5:
+        this.registry.set('5', '5');
         break;
-      case 'red1.png':
-        this.registry.set('red1.png', brick.frame.name);
+      case 4:
+        this.registry.set('4', '4');
         break;
-      case 'blue1.png':
-        this.registry.set('blue1.png', brick.frame.name);
+      case 3:
+        this.registry.set('3', '3');
         break;
       default:
     }
@@ -120,7 +120,7 @@ export default class BreakOutScene extends Phaser.Scene {
   resetLevel() {
     this.bricks.children.each((brick) => {
       brick.enableBody(false, 0, 0, true, true);
-      brick.setFrame(Phaser.Math.RND.pick(this.brickKeys));
+      brick.setFrame(Phaser.Math.Between(0, 5));
     })
     this.resetBall();
 

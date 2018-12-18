@@ -5,8 +5,8 @@ skeletons and loot awesome weapons, and fight through unique dungeons.
 
 TODO (so far, more will be added):
 - Finish map, so it is a smooth experience to walk through, with no collisions.
-- Add spawn points for enemies, will be done in Tiled.
-- Work on the Breakout mechanics.
+- Work on the Breakout mechanics:
+    come up with combos and maybe a way to preset the way the bricks are layed out.
 - Loot and inventory system.
 - Pointer support for touch.
 
