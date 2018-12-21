@@ -1,4 +1,5 @@
 import CharacterSheet from './CharacterSheet.js';
+import Items from '../Items.js';
 
 export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
@@ -13,53 +14,15 @@ export default class Player extends CharacterSheet {
 
     this.inventory = {
       gold: 0,
-      items: [],
+      items:{
+        weapons: [Items.weapons[0]],
+        armor: [Items.armor[0]],
+      }
     }
 
-    this.weapons = [
-      {
-        type: 'twoHandedSword',
-        name: 'Hand of Justice',
-        damage: 102,
-        speed: 1.8,
-        value: 10000,
-        stats: {
-          str: 3,
-          agi: 2,
-          sta: 10,
-          crit: 1,
-        },
-      },
-      {
-        type: 'twoHandedSword',
-        name: 'Hand of Fury',
-        damage: 172,
-        speed: 1.5,
-        value: 20000,
-        stats: {
-          str: 5,
-          agi: 5,
-          sta: 10,
-          crit: 1,
-        },
-      },
-    ]
     this.equipped = {
-      weapon: this.weapons[0],
-      armor: {
-        slot: 'chest',
-        type: 'plate',
-        name: 'Plate of the Abyss',
-        armor: 10,
-        value: 100000,
-        stats: {
-          str: 4,
-          agi: 3,
-          sta: 20,
-          crit: 1,
-
-        },
-      },
+      weapon: this.inventory.items.weapons[0],
+      armor: this.inventory.items.armor[0],
     }
 
     this.reCalculateStats();
@@ -72,7 +35,6 @@ export default class Player extends CharacterSheet {
     scene.registry.set('playerXp', this.xp);
     this.gainXp(1);
 
-    this.changeWeapon(this.weapons[1]);
     this.chanceToMiss = .15;
 
     this.scene.registry.events.on('changedata', this.updateData, this);

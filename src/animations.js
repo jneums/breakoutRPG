@@ -1,9 +1,12 @@
 
 
 function createAnimations(scene) {
-  let textures = [ 'skeleton' ];
-
+    //TODO refactor!!
    //use .map to create all anims at once
+   scene.anims.create({
+     key: 'gold',
+     frames: scene.anims.generateFrameNumbers('gold', { start: 0, end: 5 }),
+   });
    scene.anims.create({
      key: 'button',
      frames: scene.anims.generateFrameNames('button', {
@@ -167,4 +170,4 @@ var directionNames = Object.keys(directions)
 var motions = Object.keys(anims);
 var knightMotions = Object.keys(knightAnims);
 
-export { createAnimations, directionNames, motions, sortedAntler };
+export { createAnimations, directionNames, motions };

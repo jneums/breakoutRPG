@@ -1,4 +1,5 @@
 import CharacterSheet from './CharacterSheet.js';
+import Items from '../Items.js';
 
 export default class Skeleton extends CharacterSheet {
   constructor (scene, x, y, texture) {
@@ -8,33 +9,12 @@ export default class Skeleton extends CharacterSheet {
     scene.physics.add.existing(this);
 
     this.setInteractive();
+    this.weapon = Items.weapons[2];
+    this.armor = Items.armor[1];
 
     this.equipped = {
-      weapon: {
-        name: 'Undead Revenger',
-        damage: 105,
-        speed: .75,
-        value: 1000,
-        stats: {
-          str: 2,
-          agi: 1,
-          sta: 6,
-          crit: .08,
-        },
-      },
-      armor: {
-        slot: 'chest',
-        type: 'mail',
-        name: 'Deaths Grasp',
-        armor: 6,
-        value: 1000,
-        stats: {
-          str: 3,
-          agi: 2,
-          sta: 14,
-
-        },
-      }
+      weapon: this.weapon,
+      armor: this.armor,
     }
 
     this.reCalculateStats();
@@ -57,11 +37,6 @@ export default class Skeleton extends CharacterSheet {
     this.loot;
   };
 
-  generateLoot(recipient) {
-    recipient.inventory.gold += 100;
-    recipient.inventory.items.push(this.equipped.weapon);
-    console.log(recipient.inventory);
-  }
 
   updateData(parent, key, data) {
     if(data !== 'destroy') {

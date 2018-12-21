@@ -3,7 +3,6 @@ import ArcherSkeleton from '../sprites/ArcherSkeleton.js';
 import Player from '../sprites/Player.js';
 
 
-
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super('GameScene');

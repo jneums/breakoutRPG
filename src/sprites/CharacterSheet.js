@@ -1,3 +1,6 @@
+import Loot from './Loot.js';
+
+
 export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, texture) {
     super(scene, x, y, texture);
@@ -12,6 +15,9 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.sta;
     this.agi;
     this.crit;
+    this.currentHps = this.getMaxHp();
+    this.loot;
+
 
     this.nameText = scene.add.text(this.x - 30, this.y - 50);
     this.nameText.setText(this.name).setVisible(false);
@@ -38,7 +44,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
     this.on('animationcomplete', function (anim, frame) {
       const type = anim.key.split('_');
-      if ('attack' == type[1] && this.getCurrentTarget()) {
+      if (type[1] ==='attack' && this.getCurrentTarget()) {
         this.meleeSwing(this.getCurrentTarget());
         this.idle()
       } else if (anim.key === 'combust') {
@@ -55,10 +61,19 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
         })
         this.frostTintIndex = 0;
         this.clearTint();
+      } else if (type[1] === 'die') {
+        this.lootCreator();
       }
     }, this);
-    this.currentHps = this.getMaxHp();
+
   };
+
+  lootCreator() {
+    this.loot = new Loot(this.scene, this.x, this.y);
+    this.loot.anims.play('gold', false);
+  }
+
+
 
   calculateStats(equipped, stat) {
   //combine all the stat from equipped items
@@ -84,7 +99,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   die() {
     if (this.name === 'skeleton') {
       this.depth = this.y + 46;
-      this.generateLoot(this.getCurrentTarget());
       this.nameText.setVisible(false);
       this.setVelocity(0)
       this.scene.registry.set('targetHps', this)
@@ -200,7 +214,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
         target.setCurrentHp(dmg, 'melee');
         if(this.name === 'knight') {
           console.log('dmg: ' + dmg);
-          console.log(this.equipped);
 
           this.gainXp(dmg)
         }

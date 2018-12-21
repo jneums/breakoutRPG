@@ -1,3 +1,6 @@
+![alt text](https://raw.githubusercontent.com/Jesse989/breakoutRPG/master/assets/screenshot.png)
+
+
 # breakoutRPG, a Hybrid game using Phaser3
 BreakoutRPG is an adventure RPG game where the combat is decided
 by playing breakout. Level up and raise your character stats, kill
@@ -9,6 +12,7 @@ TODO (so far, more will be added):
     come up with combos and maybe a way to preset the way the bricks are layed out.
 - Loot and inventory system.
 - Pointer support for touch.
+- Use IPFS and blockchain for some stuff
 
 
 ### Requirements
